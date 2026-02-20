@@ -73,5 +73,27 @@ namespace GoDent.Controllers
             var slots = await _appointmentService.GetDailySlotsAsync(date);
             return Json(slots);
         }
+
+        // GET: Appointments/Update
+        public async Task<IActionResult> Edit(int id)
+        {
+            if (id <= 0)
+            {
+                return BadRequest();
+            }
+
+            var appointment = await _appointmentService.GetAppointmentByIdAsync(id);
+            if (appointment == null)
+            {
+                return NotFound();
+            }
+
+            var patients = await _patientService.GetAllPatientsAsync();
+            ViewData["PatientId"] = new SelectList(patients, "Id", "FullName");
+            ViewData["Date"] = appointment.AppointmentDate.ToString("yyyy-MM-dd");
+
+            return View();
+        }
+
     }
 }

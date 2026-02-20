@@ -15,7 +15,7 @@ namespace GoDent.DAL.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.23");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.24");
 
             modelBuilder.Entity("GoDent.DAL.Entities.Appointment", b =>
                 {
@@ -29,7 +29,7 @@ namespace GoDent.DAL.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<TimeSpan>("EndTime")
+                    b.Property<TimeSpan?>("EndTime")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Notes")
@@ -39,7 +39,8 @@ namespace GoDent.DAL.Migrations
                     b.Property<int>("PatientId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<TimeSpan>("StartTime")
+                    b.Property<TimeSpan?>("StartTime")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Status")
@@ -50,6 +51,108 @@ namespace GoDent.DAL.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("Appointments");
+                });
+
+            modelBuilder.Entity("GoDent.DAL.Entities.Department", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Departments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2026, 2, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Dental Surgery Department",
+                            Name = "Surgery"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2026, 2, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Radiology Department",
+                            Name = "Radiology"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2026, 2, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Sterilization Department",
+                            Name = "Sterilization"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2026, 2, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Orthodontics Department",
+                            Name = "Orthodontics"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(2026, 2, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Endodontics Department",
+                            Name = "Endodontics"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateTime(2026, 2, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Fixed Prothodontics Department",
+                            Name = "Fixed Prothodontics"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedAt = new DateTime(2026, 2, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Removable Prothodontics Department",
+                            Name = "Removable"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedAt = new DateTime(2026, 2, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Conservative Dentistry Department",
+                            Name = "Conservative"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CreatedAt = new DateTime(2026, 2, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Pediatric Dentistry Department",
+                            Name = "Pedodontics"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CreatedAt = new DateTime(2026, 2, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Periodontics Department",
+                            Name = "Periodontics"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CreatedAt = new DateTime(2026, 2, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Other Departments",
+                            Name = "Other"
+                        });
                 });
 
             modelBuilder.Entity("GoDent.DAL.Entities.Expense", b =>
@@ -97,7 +200,7 @@ namespace GoDent.DAL.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("DateOfBirth")
+                    b.Property<DateOnly>("DateOfBirth")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FullName")
@@ -155,6 +258,43 @@ namespace GoDent.DAL.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("Payments");
+                });
+
+            modelBuilder.Entity("GoDent.DAL.Entities.Tool", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("MinQuantity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.ToTable("Tools");
                 });
 
             modelBuilder.Entity("GoDent.DAL.Entities.ToothHistory", b =>
@@ -252,6 +392,17 @@ namespace GoDent.DAL.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("GoDent.DAL.Entities.Tool", b =>
+                {
+                    b.HasOne("GoDent.DAL.Entities.Department", "Department")
+                        .WithMany("Tools")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+                });
+
             modelBuilder.Entity("GoDent.DAL.Entities.ToothHistory", b =>
                 {
                     b.HasOne("GoDent.DAL.Entities.Patient", "Patient")
@@ -272,6 +423,11 @@ namespace GoDent.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("GoDent.DAL.Entities.Department", b =>
+                {
+                    b.Navigation("Tools");
                 });
 
             modelBuilder.Entity("GoDent.DAL.Entities.Patient", b =>

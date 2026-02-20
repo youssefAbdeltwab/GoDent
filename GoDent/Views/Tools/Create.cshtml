@@ -1,0 +1,71 @@
+@model GoDent.DAL.Entities.Tool
+
+@{
+    ViewData["Title"] = "إضافة أداة جديدة";
+}
+
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h4><i class="fas fa-toolbox"></i> إضافة أداة جديدة</h4>
+    </div>
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Name" class="form-label">اسم الأداة</label>
+                    <input asp-for="Name" class="form-control" placeholder="أدخل اسم الأداة" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="DepartmentId" class="form-label">القسم</label>
+                    <select asp-for="DepartmentId" class="form-select" asp-items="ViewBag.DepartmentId">
+                        <option value="">-- اختر القسم --</option>
+                    </select>
+                    <span asp-validation-for="DepartmentId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Quantity" class="form-label">الكمية</label>
+                    <input asp-for="Quantity" type="number" class="form-control" placeholder="0" />
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label asp-for="MinQuantity" class="form-label">الحد الأدنى للكمية</label>
+                    <input asp-for="MinQuantity" type="number" class="form-control" placeholder="0" />
+                    <span asp-validation-for="MinQuantity" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Price" class="form-label">السعر</label>
+                    <input asp-for="Price" type="number" step="0.01" class="form-control" placeholder="0.00" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">الوصف</label>
+                <textarea asp-for="Description" class="form-control" rows="3" placeholder="وصف الأداة (اختياري)"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-start gap-2">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i> حفظ
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-right"></i> رجوع
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -9,65 +9,85 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = GoDent
 build_property.RootNamespace = GoDent
-build_property.ProjectDir = d:\perso\Projcets\GoDent Solution\GoDent\
+build_property.ProjectDir = D:\perso\Projcets\GoDent Solution\GoDent\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = d:\perso\Projcets\GoDent Solution\GoDent
+build_property.MSBuildProjectDirectory = D:\perso\Projcets\GoDent Solution\GoDent
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[d:/perso/Projcets/GoDent Solution/GoDent/Views/Appointments/Create.cshtml]
+[D:/perso/Projcets/GoDent Solution/GoDent/Views/Appointments/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXBwb2ludG1lbnRzXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/perso/Projcets/GoDent Solution/GoDent/Views/Appointments/Index.cshtml]
+[D:/perso/Projcets/GoDent Solution/GoDent/Views/Appointments/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXBwb2ludG1lbnRzXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/perso/Projcets/GoDent Solution/GoDent/Views/Appointments/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXBwb2ludG1lbnRzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/perso/Projcets/GoDent Solution/GoDent/Views/Home/Index.cshtml]
+[D:/perso/Projcets/GoDent Solution/GoDent/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/perso/Projcets/GoDent Solution/GoDent/Views/Home/Privacy.cshtml]
+[D:/perso/Projcets/GoDent Solution/GoDent/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/perso/Projcets/GoDent Solution/GoDent/Views/Patients/Create.cshtml]
+[D:/perso/Projcets/GoDent Solution/GoDent/Views/Patients/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGF0aWVudHNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/perso/Projcets/GoDent Solution/GoDent/Views/Patients/Delete.cshtml]
+[D:/perso/Projcets/GoDent Solution/GoDent/Views/Patients/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGF0aWVudHNcRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/perso/Projcets/GoDent Solution/GoDent/Views/Patients/Edit.cshtml]
+[D:/perso/Projcets/GoDent Solution/GoDent/Views/Patients/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGF0aWVudHNcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/perso/Projcets/GoDent Solution/GoDent/Views/Patients/Index.cshtml]
+[D:/perso/Projcets/GoDent Solution/GoDent/Views/Patients/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGF0aWVudHNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/perso/Projcets/GoDent Solution/GoDent/Views/Shared/Error.cshtml]
+[D:/perso/Projcets/GoDent Solution/GoDent/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/perso/Projcets/GoDent Solution/GoDent/Views/Shared/_ValidationScriptsPartial.cshtml]
+[D:/perso/Projcets/GoDent Solution/GoDent/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/perso/Projcets/GoDent Solution/GoDent/Views/_ViewImports.cshtml]
+[D:/perso/Projcets/GoDent Solution/GoDent/Views/Tools/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVG9vbHNcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/perso/Projcets/GoDent Solution/GoDent/Views/Tools/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVG9vbHNcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/perso/Projcets/GoDent Solution/GoDent/Views/Tools/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVG9vbHNcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/perso/Projcets/GoDent Solution/GoDent/Views/Tools/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVG9vbHNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/perso/Projcets/GoDent Solution/GoDent/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/perso/Projcets/GoDent Solution/GoDent/Views/_ViewStart.cshtml]
+[D:/perso/Projcets/GoDent Solution/GoDent/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/perso/Projcets/GoDent Solution/GoDent/Views/Shared/_Layout.cshtml]
+[D:/perso/Projcets/GoDent Solution/GoDent/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-xtxu6ldtg5

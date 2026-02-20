@@ -1,0 +1,100 @@
+@model IEnumerable<GoDent.DAL.Entities.Tool>
+
+@{
+    ViewData["Title"] = "قائمة الأدوات";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-toolbox"></i> قائمة الأدوات والمعدات</h2>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="fas fa-plus"></i> إضافة أداة جديدة
+    </a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card">
+    <div class="card-body">
+        <table id="toolsTable" class="table table-striped table-hover">
+            <thead class="table-primary">
+                <tr>
+                    <th>اسم الأداة</th>
+                    <th>القسم</th>
+                    <th>الكمية</th>
+                    <th>الحد الأدنى</th>
+                    <th>السعر</th>
+                    <th>الحالة</th>
+                    <th>تاريخ الإضافة</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var tool in Model)
+                {
+                    <tr>
+                        <td>@tool.Name</td>
+                        <td>@tool.Department.Name</td>
+                        <td>@tool.Quantity</td>
+                        <td>@tool.MinQuantity</td>
+                        <td>@tool.Price.ToString("C")</td>
+                        <td>
+                            @if (tool.Quantity <= tool.MinQuantity)
+                            {
+                                <span class="badge bg-danger">
+                                    <i class="fas fa-exclamation-triangle"></i> نقص في المخزون
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check-circle"></i> متوفر
+                                </span>
+                            }
+                        </td>
+                        <td>@tool.CreatedAt.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a asp-action="Edit" asp-route-id="@tool.Id" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i> تعديل
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@tool.Id" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i> حذف
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#toolsTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/ar.json',
+                    search: "بحث:",
+                    lengthMenu: "عرض _MENU_ سجل",
+                    info: "عرض _START_ إلى _END_ من _TOTAL_ سجل",
+                    infoEmpty: "لا توجد سجلات",
+                    infoFiltered: "(منتقاة من _MAX_ سجل)",
+                    paginate: {
+                        first: "الأول",
+                        last: "الأخير",
+                        next: "التالي",
+                        previous: "السابق"
+                    }
+                },
+                order: [[6, 'desc']] // Sort by date added (newest first)
+            });
+        });
+    </script>
+}
