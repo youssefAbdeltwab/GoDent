@@ -11,6 +11,7 @@ public interface IAppointmentService
     //Task<bool> HasConflictAsync(DateTime appointmentDate, int? excludeAppointmentId = null);
     Task AddAppointmentAsync(Appointment appointment);
     Task UpdateAppointmentAsync(Appointment appointment);
+    Task<Appointment> GetAppointmentByIdAsync(int id);
 
     /// <summary>
     /// Generates a list of time slots for a specific date, marking them as Available or Booked.

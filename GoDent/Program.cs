@@ -18,6 +18,7 @@ namespace GoDent
             // ── Register BLL Services ──
             builder.Services.AddScoped<IPatientService, PatientService>();
             builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+            builder.Services.AddScoped<IToolService, ToolService>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();

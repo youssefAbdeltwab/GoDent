@@ -43,7 +43,13 @@ public class AppointmentService : IAppointmentService
             .ToListAsync();
     }
 
-   // CRITICAL: Conflict Checking Logic
+    public async Task<Appointment> GetAppointmentByIdAsync(int id)
+    {
+        
+        return await _context.Appointments.FindAsync(id);
+    }
+
+    // CRITICAL: Conflict Checking Logic
     //public async Task<bool> HasConflictAsync(DateTime appointmentDate, int? excludeAppointmentId = null)
     //{
     //    // 30-minute window for conflict detection

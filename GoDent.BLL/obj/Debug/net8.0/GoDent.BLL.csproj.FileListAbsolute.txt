@@ -13,3 +13,4 @@ D:\perso\Projcets\GoDent Solution\GoDent.BLL\bin\Debug\net8.0\GoDent.DAL.dll
 D:\perso\Projcets\GoDent Solution\GoDent.BLL\bin\Debug\net8.0\GoDent.DAL.pdb
 D:\perso\Projcets\GoDent Solution\GoDent.BLL\obj\Debug\net8.0\GoDent.BLL.csproj.AssemblyReference.cache
 D:\perso\Projcets\GoDent Solution\GoDent.BLL\obj\Debug\net8.0\GoDent.BLL.csproj.Up2Date
+D:\perso\Projcets\GoDent Solution\GoDent.BLL\obj\Debug\net8.0\GoDent.BLL.sourcelink.json

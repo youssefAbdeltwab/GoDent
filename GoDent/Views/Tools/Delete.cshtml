@@ -1,0 +1,45 @@
+@model GoDent.DAL.Entities.Tool
+
+@{
+    ViewData["Title"] = "حذف أداة";
+}
+
+<div class="card border-danger">
+    <div class="card-header bg-danger text-white">
+        <h4><i class="fas fa-exclamation-triangle"></i> تأكيد الحذف</h4>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-warning">
+            <strong>تحذير:</strong> هل أنت متأكد من حذف هذه الأداة؟ لا يمكن التراجع عن هذا الإجراء!
+        </div>
+
+        <dl class="row">
+            <dt class="col-sm-3">اسم الأداة:</dt>
+            <dd class="col-sm-9">@Model.Name</dd>
+
+            <dt class="col-sm-3">القسم:</dt>
+            <dd class="col-sm-9">@Model.Department.Name</dd>
+
+            <dt class="col-sm-3">الكمية:</dt>
+            <dd class="col-sm-9">@Model.Quantity</dd>
+
+            <dt class="col-sm-3">السعر:</dt>
+            <dd class="col-sm-9">@Model.Price.ToString("C")</dd>
+
+            <dt class="col-sm-3">تاريخ الإضافة:</dt>
+            <dd class="col-sm-9">@Model.CreatedAt.ToString("yyyy-MM-dd")</dd>
+        </dl>
+
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div class="d-flex justify-content-start gap-2">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> تأكيد الحذف
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> إلغاء
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -20,6 +20,27 @@ namespace GoDent.DAL.Data
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Expense> Expenses { get; set; }
         public DbSet<ToothHistory> ToothHistories { get; set; }
+        public DbSet<Tool> Tools { get; set; }
+        public DbSet<Department> Departments { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Seed static department data (English names only)
+            modelBuilder.Entity<Department>().HasData(
+                new Department { Id = 1, Name = "Surgery", Description = "Dental Surgery Department", CreatedAt = new DateTime(2026, 2, 20) },
+                new Department { Id = 2, Name = "Radiology", Description = "Radiology Department", CreatedAt = new DateTime(2026, 2, 20) },
+                new Department { Id = 3, Name = "Sterilization", Description = "Sterilization Department", CreatedAt = new DateTime(2026, 2, 20) },
+                new Department { Id = 4, Name = "Orthodontics", Description = "Orthodontics Department", CreatedAt = new DateTime(2026, 2, 20) },
+                new Department { Id = 5, Name = "Endodontics", Description = "Endodontics Department", CreatedAt = new DateTime(2026, 2, 20) },
+                new Department { Id = 6, Name = "Fixed Prothodontics", Description = "Fixed Prothodontics Department", CreatedAt = new DateTime(2026, 2, 20) },
+                new Department { Id = 7, Name = "Removable", Description = "Removable Prothodontics Department", CreatedAt = new DateTime(2026, 2, 20) },
+                new Department { Id = 8, Name = "Conservative", Description = "Conservative Dentistry Department", CreatedAt = new DateTime(2026, 2, 20) },
+                new Department { Id = 9, Name = "Pedodontics", Description = "Pediatric Dentistry Department", CreatedAt = new DateTime(2026, 2, 20) },
+                new Department { Id = 10, Name = "Periodontics", Description = "Periodontics Department", CreatedAt = new DateTime(2026, 2, 20) },
+                new Department { Id = 11, Name = "Other", Description = "Other Departments", CreatedAt = new DateTime(2026, 2, 20) }
+            );
+        }
     }
 }

@@ -12,3 +12,4 @@ D:\perso\Projcets\GoDent Solution\GoDent.DAL\obj\Debug\net8.0\GoDent.DAL.pdb
 D:\perso\Projcets\GoDent Solution\GoDent.DAL\obj\Debug\net8.0\GoDent.DAL.genruntimeconfig.cache
 D:\perso\Projcets\GoDent Solution\GoDent.DAL\bin\Debug\net8.0\GoDent.DAL.pdb
 D:\perso\Projcets\GoDent Solution\GoDent.DAL\obj\Debug\net8.0\ref\GoDent.DAL.dll
+D:\perso\Projcets\GoDent Solution\GoDent.DAL\obj\Debug\net8.0\GoDent.DAL.sourcelink.json
