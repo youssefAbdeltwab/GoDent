@@ -1,0 +1,15 @@
+D:\perso\Projcets\GoDent Solution\GoDent.BLL\obj\Debug\net8.0\GoDent.BLL.GeneratedMSBuildEditorConfig.editorconfig
+D:\perso\Projcets\GoDent Solution\GoDent.BLL\obj\Debug\net8.0\GoDent.BLL.AssemblyInfoInputs.cache
+D:\perso\Projcets\GoDent Solution\GoDent.BLL\obj\Debug\net8.0\GoDent.BLL.AssemblyInfo.cs
+D:\perso\Projcets\GoDent Solution\GoDent.BLL\obj\Debug\net8.0\GoDent.BLL.csproj.CoreCompileInputs.cache
+D:\perso\Projcets\GoDent Solution\GoDent.BLL\bin\Debug\net8.0\GoDent.BLL.deps.json
+D:\perso\Projcets\GoDent Solution\GoDent.BLL\bin\Debug\net8.0\GoDent.BLL.dll
+D:\perso\Projcets\GoDent Solution\GoDent.BLL\bin\Debug\net8.0\GoDent.BLL.pdb
+D:\perso\Projcets\GoDent Solution\GoDent.BLL\obj\Debug\net8.0\GoDent.BLL.dll
+D:\perso\Projcets\GoDent Solution\GoDent.BLL\obj\Debug\net8.0\refint\GoDent.BLL.dll
+D:\perso\Projcets\GoDent Solution\GoDent.BLL\obj\Debug\net8.0\GoDent.BLL.pdb
+D:\perso\Projcets\GoDent Solution\GoDent.BLL\obj\Debug\net8.0\ref\GoDent.BLL.dll
+D:\perso\Projcets\GoDent Solution\GoDent.BLL\bin\Debug\net8.0\GoDent.DAL.dll
+D:\perso\Projcets\GoDent Solution\GoDent.BLL\bin\Debug\net8.0\GoDent.DAL.pdb
+D:\perso\Projcets\GoDent Solution\GoDent.BLL\obj\Debug\net8.0\GoDent.BLL.csproj.AssemblyReference.cache
+D:\perso\Projcets\GoDent Solution\GoDent.BLL\obj\Debug\net8.0\GoDent.BLL.csproj.Up2Date

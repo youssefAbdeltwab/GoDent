@@ -1,0 +1,14 @@
+D:\perso\Projcets\GoDent Solution\GoDent.DAL\bin\Debug\net8.0\GoDent.DAL.dll
+D:\perso\Projcets\GoDent Solution\GoDent.DAL\obj\Debug\net8.0\GoDent.DAL.csproj.AssemblyReference.cache
+D:\perso\Projcets\GoDent Solution\GoDent.DAL\obj\Debug\net8.0\GoDent.DAL.GeneratedMSBuildEditorConfig.editorconfig
+D:\perso\Projcets\GoDent Solution\GoDent.DAL\obj\Debug\net8.0\GoDent.DAL.AssemblyInfoInputs.cache
+D:\perso\Projcets\GoDent Solution\GoDent.DAL\obj\Debug\net8.0\GoDent.DAL.AssemblyInfo.cs
+D:\perso\Projcets\GoDent Solution\GoDent.DAL\obj\Debug\net8.0\GoDent.DAL.csproj.CoreCompileInputs.cache
+D:\perso\Projcets\GoDent Solution\GoDent.DAL\bin\Debug\net8.0\GoDent.DAL.deps.json
+D:\perso\Projcets\GoDent Solution\GoDent.DAL\bin\Debug\net8.0\GoDent.DAL.runtimeconfig.json
+D:\perso\Projcets\GoDent Solution\GoDent.DAL\obj\Debug\net8.0\GoDent.DAL.dll
+D:\perso\Projcets\GoDent Solution\GoDent.DAL\obj\Debug\net8.0\refint\GoDent.DAL.dll
+D:\perso\Projcets\GoDent Solution\GoDent.DAL\obj\Debug\net8.0\GoDent.DAL.pdb
+D:\perso\Projcets\GoDent Solution\GoDent.DAL\obj\Debug\net8.0\GoDent.DAL.genruntimeconfig.cache
+D:\perso\Projcets\GoDent Solution\GoDent.DAL\bin\Debug\net8.0\GoDent.DAL.pdb
+D:\perso\Projcets\GoDent Solution\GoDent.DAL\obj\Debug\net8.0\ref\GoDent.DAL.dll

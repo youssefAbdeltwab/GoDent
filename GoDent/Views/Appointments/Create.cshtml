@@ -1,0 +1,300 @@
+@model GoDent.DAL.Entities.Appointment
+
+@{
+    ViewData["Title"] = "حجز موعد جديد";
+}
+
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-calendar-plus"></i> حجز موعد جديد
+                </h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <!-- Patient Selection -->
+                    <div class="mb-4">
+                        <label asp-for="PatientId" class="form-label">
+                            <i class="fas fa-user"></i> اختر المريض
+                        </label>
+                        <select asp-for="PatientId" class="form-select form-select-lg" asp-items="@ViewBag.PatientId">
+                            <option value="">-- اختر المريض --</option>
+                        </select>
+                        <span asp-validation-for="PatientId" class="text-danger"></span>
+                    </div>
+
+                    <!-- Date Selection -->
+                    <div class="mb-4">
+                        <label asp-for="AppointmentDate" class="form-label">
+                            <i class="fas fa-calendar-day"></i> تاريخ الموعد
+                        </label>
+                        <input asp-for="AppointmentDate"
+                               class="form-control form-control-lg"
+                               type="date"
+                               id="appointmentDate"
+                               min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                        <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+                        <div class="form-text">
+                            <i class="fas fa-info-circle"></i> اختر التاريخ لعرض الأوقات المتاحة
+                        </div>
+                    </div>
+
+                    <!-- Hidden field for StartTime -->
+                    <input type="hidden" asp-for="StartTime" id="startTimeInput" />
+
+                    <!-- Time Slots Selection -->
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-clock"></i> الأوقات المتاحة
+                        </label>
+
+                        <!-- Loading Spinner -->
+                        <div id="slotsLoader" class="d-none text-center py-3">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">جاري التحميل...</span>
+                            </div>
+                            <p class="text-muted mt-2">جاري تحميل المواعيد المتاحة...</p>
+                        </div>
+
+                        <!-- Slots Container -->
+                        <div id="slotsContainer"
+                             class="border rounded p-3 bg-light"
+                             style="min-height: 120px;">
+                            <div class="text-center text-muted py-4">
+                                <i class="fas fa-calendar-alt fa-3x mb-3 opacity-50"></i>
+                                <p>يرجى اختيار تاريخ لعرض المواعيد المتاحة</p>
+                            </div>
+                        </div>
+                        <span asp-validation-for="StartTime" class="text-danger"></span>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="mb-4">
+                        <label asp-for="Notes" class="form-label">
+                            <i class="fas fa-sticky-note"></i> ملاحظات (اختياري)
+                        </label>
+                        <textarea asp-for="Notes"
+                                  class="form-control"
+                                  rows="3"
+                                  placeholder="أضف أي ملاحظات خاصة بالموعد..."></textarea>
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-start gap-2 pt-3 border-top">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-save"></i> تأكيد الحجز
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-times"></i> إلغاء
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Help Card -->
+        <div class="card mt-3 border-info">
+            <div class="card-body">
+                <h6 class="card-title text-info">
+                    <i class="fas fa-lightbulb"></i> نصائح الحجز
+                </h6>
+                <ul class="mb-0 small">
+                    <li>اختر المريض من القائمة أولاً</li>
+                    <li>حدد التاريخ المناسب للموعد</li>
+                    <li>انقر على الوقت المتاح المناسب (الأزرق = متاح، الرمادي = محجوز)</li>
+                    <li>أضف أي ملاحظات إذا لزم الأمر</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function() {
+            var dateInput = $('#appointmentDate');
+            var slotsContainer = $('#slotsContainer');
+            var startTimeInput = $('#startTimeInput');
+            var loader = $('#slotsLoader');
+
+            // Date change handler
+            dateInput.on('change', function() {
+                var selectedDate = $(this).val();
+
+                if (!selectedDate) {
+                    resetSlotsContainer();
+                    return;
+                }
+
+                // Show loader and prepare UI
+                slotsContainer.addClass('d-none');
+                loader.removeClass('d-none');
+                startTimeInput.val(''); // Clear previous selection
+
+                // AJAX Call to get available time slots
+                $.ajax({
+                    url: '/Appointments/GetSlots',
+                    type: 'GET',
+                    data: { date: selectedDate },
+                    success: function(data) {
+                        loader.addClass('d-none');
+                        slotsContainer.removeClass('d-none');
+                        renderSlots(data);
+                    },
+                    error: function() {
+                        loader.addClass('d-none');
+                        slotsContainer.removeClass('d-none');
+                        slotsContainer.html(
+                            '<div class="alert alert-danger text-center">' +
+                            '<i class="fas fa-exclamation-triangle"></i> حدث خطأ في تحميل المواعيد. يرجى المحاولة مرة أخرى.' +
+                            '</div>'
+                        );
+                    }
+                });
+            });
+
+            // Render time slots
+            function renderSlots(data) {
+                slotsContainer.empty();
+
+                if (!data || data.length === 0) {
+                    slotsContainer.html(
+                        '<div class="alert alert-warning text-center mb-0">' +
+                        '<i class="fas fa-info-circle"></i> لا توجد مواعيد متاحة في هذا اليوم (قد تكون عطلة أو خارج أوقات العمل)' +
+                        '</div>'
+                    );
+                    return;
+                }
+
+                var slotsHtml = '<div class="d-flex flex-wrap gap-2">';
+
+                $.each(data, function(index, slot) {
+                    var isAvailable = slot.isAvailable;
+                    var btnClass = isAvailable
+                        ? 'btn-outline-primary slot-btn-available'
+                        : 'btn-outline-secondary opacity-50';
+                    var disabledAttr = isAvailable ? '' : 'disabled';
+                    var clickEvent = isAvailable
+                        ? `onclick="selectSlot('${slot.time}', this)"`
+                        : '';
+
+                    var icon = isAvailable
+                        ? '<i class="fas fa-check-circle"></i>'
+                        : '<i class="fas fa-times-circle"></i>';
+
+                    slotsHtml += `
+                        <button type="button"
+                                class="btn ${btnClass} slot-btn px-3 py-2"
+                                ${disabledAttr}
+                                ${clickEvent}
+                                data-time="${slot.time}">
+                            ${icon} ${slot.displayTime}
+                        </button>
+                    `;
+                });
+
+                slotsHtml += '</div>';
+
+                // Add legend
+                slotsHtml += `
+                    <div class="mt-3 p-2 bg-white rounded border">
+                        <small class="text-muted">
+                            <i class="fas fa-check-circle text-primary"></i> متاح &nbsp;&nbsp;
+                            <i class="fas fa-times-circle text-secondary"></i> محجوز
+                        </small>
+                    </div>
+                `;
+
+                slotsContainer.html(slotsHtml);
+            }
+
+            // Reset slots container to initial state
+            function resetSlotsContainer() {
+                slotsContainer.html(
+                    '<div class="text-center text-muted py-4">' +
+                    '<i class="fas fa-calendar-alt fa-3x mb-3 opacity-50"></i>' +
+                    '<p>يرجى اختيار تاريخ لعرض المواعيد المتاحة</p>' +
+                    '</div>'
+                );
+                startTimeInput.val('');
+            }
+        });
+
+        // Global function to select time slot
+        function selectSlot(timeVal, btnElement) {
+            // Update hidden input with selected time
+            $('#startTimeInput').val(timeVal);
+
+            // Visual feedback: highlight selected slot
+            $('.slot-btn-available').removeClass('btn-primary text-white').addClass('btn-outline-primary');
+            $(btnElement).removeClass('btn-outline-primary').addClass('btn-primary text-white');
+
+            // Show success feedback
+            var $btn = $(btnElement);
+            var originalHtml = $btn.html();
+            $btn.html('<i class="fas fa-check-double"></i> محدد');
+
+            setTimeout(function() {
+                $btn.html(originalHtml);
+            }, 1000);
+        }
+    </script>
+
+    <style>
+        /* Custom styling for time slot buttons */
+        .slot-btn {
+            min-width: 120px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .slot-btn-available:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .slot-btn.btn-primary {
+            animation: pulse 0.5s;
+        }
+
+        /* keyframes pulse {
+            0%
+
+        {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+
+        } */
+
+        /* Form enhancements */
+        .form-select-lg, .form-control-lg {
+            font-size: 1.1rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+            .form-label i {
+                color: #007bff;
+                margin-left: 5px;
+            }
+    </style>
+}
