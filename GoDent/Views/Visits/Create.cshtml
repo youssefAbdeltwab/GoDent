@@ -1,0 +1,57 @@
+@model GoDent.DAL.Entities.Visit
+
+@{
+    ViewData["Title"] = "إضافة زيارة جديدة";
+}
+
+<div class="card">
+    <div class="card-header bg-success text-white">
+        <h4><i class="fas fa-calendar-plus"></i> إضافة زيارة جديدة</h4>
+        <small>للمريض: @ViewBag.PatientName</small>
+    </div>
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <input type="hidden" asp-for="PatientId" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="VisitDate" class="form-label">تاريخ الزيارة</label>
+                <input asp-for="VisitDate" type="date" class="form-control" />
+                <span asp-validation-for="VisitDate" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ChiefComplaint" class="form-label">سبب الزيارة</label>
+                <textarea asp-for="ChiefComplaint" class="form-control" rows="2" 
+                          placeholder="مثال: ألم في الضرس العلوي الأيمن"></textarea>
+                <span asp-validation-for="ChiefComplaint" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Diagnosis" class="form-label">التشخيص</label>
+                <textarea asp-for="Diagnosis" class="form-control" rows="3" 
+                          placeholder="مثال: تسوس عميق بالسن 16 يحتاج علاج عصب"></textarea>
+                <span asp-validation-for="Diagnosis" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Notes" class="form-label">ملاحظات</label>
+                <textarea asp-for="Notes" class="form-control" rows="2"></textarea>
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-start gap-2">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i> حفظ الزيارة
+                </button>
+                <a asp-controller="Patients" asp-action="Details" asp-route-id="@ViewBag.PatientId" class="btn btn-secondary">
+                    <i class="fas fa-arrow-right"></i> رجوع
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -53,6 +53,52 @@ namespace GoDent.DAL.Migrations
                     b.ToTable("Appointments");
                 });
 
+            modelBuilder.Entity("GoDent.DAL.Entities.ClinicDebt", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Category")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CreditorName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsRecurring")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("RecurrenceDay")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ClinicDebts");
+                });
+
             modelBuilder.Entity("GoDent.DAL.Entities.Department", b =>
                 {
                     b.Property<int>("Id")
@@ -199,6 +245,9 @@ namespace GoDent.DAL.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
+
+                    b.Property<decimal>("CurrentDebt")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateOnly>("DateOfBirth")
                         .HasColumnType("TEXT");
@@ -363,11 +412,50 @@ namespace GoDent.DAL.Migrations
                     b.Property<DateTime>("TreatmentDate")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("VisitId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PatientId");
 
+                    b.HasIndex("VisitId");
+
                     b.ToTable("Treatments");
+                });
+
+            modelBuilder.Entity("GoDent.DAL.Entities.Visit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ChiefComplaint")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Diagnosis")
+                        .HasMaxLength(1000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("VisitDate")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("Visits");
                 });
 
             modelBuilder.Entity("GoDent.DAL.Entities.Appointment", b =>
@@ -406,7 +494,7 @@ namespace GoDent.DAL.Migrations
             modelBuilder.Entity("GoDent.DAL.Entities.ToothHistory", b =>
                 {
                     b.HasOne("GoDent.DAL.Entities.Patient", "Patient")
-                        .WithMany("ToothHistories")
+                        .WithMany()
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -418,6 +506,25 @@ namespace GoDent.DAL.Migrations
                 {
                     b.HasOne("GoDent.DAL.Entities.Patient", "Patient")
                         .WithMany("Treatments")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GoDent.DAL.Entities.Visit", "Visit")
+                        .WithMany("Treatments")
+                        .HasForeignKey("VisitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+
+                    b.Navigation("Visit");
+                });
+
+            modelBuilder.Entity("GoDent.DAL.Entities.Visit", b =>
+                {
+                    b.HasOne("GoDent.DAL.Entities.Patient", "Patient")
+                        .WithMany("Visits")
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -436,8 +543,13 @@ namespace GoDent.DAL.Migrations
 
                     b.Navigation("Payments");
 
-                    b.Navigation("ToothHistories");
+                    b.Navigation("Treatments");
 
+                    b.Navigation("Visits");
+                });
+
+            modelBuilder.Entity("GoDent.DAL.Entities.Visit", b =>
+                {
                     b.Navigation("Treatments");
                 });
 #pragma warning restore 612, 618

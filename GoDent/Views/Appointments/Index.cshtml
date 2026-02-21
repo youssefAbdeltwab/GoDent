@@ -1,4 +1,5 @@
 @model IEnumerable<GoDent.DAL.Entities.Appointment>
+@inject GoDent.BLL.Service.Abstraction.IWhatsAppService whatsAppService
 
 @{
     ViewData["Title"] = "المواعيد";
@@ -82,6 +83,7 @@
                             <th>الحالة</th>
                             <th>ملاحظات</th>
                             <th>الإجراءات</th>
+                            <th>تذكير واتساب</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -179,6 +181,31 @@
                                             </form>
                                         }
                                     </div>
+                                </td>
+                                <td>
+                                    @{
+                                        var isToday = currentDate.Date == DateTime.Today.Date;
+                                        var isTomorrow = currentDate.Date == DateTime.Today.AddDays(1).Date;
+                                    }
+                                    
+                                    @if (isToday && item.Status == GoDent.DAL.Enums.AppointmentStatus.Scheduled)
+                                    {
+                                        <a href="@whatsAppService.GenerateTodayAppointmentReminderUrl(item)" 
+                                           target="_blank" class="btn btn-success btn-sm">
+                                            <i class="fab fa-whatsapp"></i> موعد اليوم
+                                        </a>
+                                    }
+                                    else if (isTomorrow && item.Status == GoDent.DAL.Enums.AppointmentStatus.Scheduled)
+                                    {
+                                        <a href="@whatsAppService.GenerateTomorrowAppointmentReminderUrl(item)" 
+                                           target="_blank" class="btn btn-success btn-sm">
+                                            <i class="fab fa-whatsapp"></i> موعد الغد
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
                                 </td>
                             </tr>
                         }

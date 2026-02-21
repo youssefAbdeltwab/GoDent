@@ -17,9 +17,15 @@ namespace GoDent.Controllers
         }
 
         // GET: Appointments
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(DateTime? date = null)
         {
-            var appointments = await _appointmentService.GetAllAppointmentsAsync();
+            var currentDate = date ?? DateTime.Today;
+            var allAppointments = await _appointmentService.GetAllAppointmentsAsync();
+            
+            // Filter appointments by date
+            var appointments = allAppointments.Where(a => a.AppointmentDate.Date == currentDate.Date);
+            
+            ViewBag.CurrentDate = currentDate;
             return View(appointments);
         }
 
@@ -89,10 +95,89 @@ namespace GoDent.Controllers
             }
 
             var patients = await _patientService.GetAllPatientsAsync();
-            ViewData["PatientId"] = new SelectList(patients, "Id", "FullName");
-            ViewData["Date"] = appointment.AppointmentDate.ToString("yyyy-MM-dd");
+            ViewData["PatientId"] = new SelectList(patients, "Id", "FullName", appointment.PatientId);
 
-            return View();
+            return View(appointment);
+        }
+
+        // POST: Appointments/Edit
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Appointment appointment)
+        {
+            if (id != appointment.Id)
+            {
+                return BadRequest();
+            }
+
+            // Remove validation errors for navigation properties
+            ModelState.Remove("Patient");
+
+            // Ensure EndTime is set correctly for the slot system (30 mins)
+            if (appointment.StartTime.HasValue && appointment.StartTime != TimeSpan.Zero)
+            {
+                appointment.EndTime = appointment.StartTime.Value.Add(TimeSpan.FromMinutes(30));
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _appointmentService.UpdateAppointmentAsync(appointment);
+                    TempData["Success"] = "تم تحديث الموعد بنجاح";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (InvalidOperationException ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "حدث خطأ أثناء تحديث الموعد: " + ex.Message);
+                }
+            }
+
+            var patients = await _patientService.GetAllPatientsAsync();
+            ViewData["PatientId"] = new SelectList(patients, "Id", "FullName", appointment.PatientId);
+            ViewData["Date"] = appointment.AppointmentDate;
+            return View(appointment);
+        }
+
+        // POST: Appointments/UpdateStatus
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateStatus(int id, string status)
+        {
+            try
+            {
+                var appointment = await _appointmentService.GetAppointmentByIdAsync(id);
+                if (appointment == null)
+                {
+                    TempData["Error"] = "الموعد غير موجود";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                // Map Arabic status to enum
+                appointment.Status = status switch
+                {
+                    "مكتمل" => GoDent.DAL.Enums.AppointmentStatus.Completed,
+                    "ملغي" => GoDent.DAL.Enums.AppointmentStatus.Cancelled,
+                    _ => appointment.Status // Keep current status if unknown
+                };
+
+                await _appointmentService.UpdateAppointmentAsync(appointment);
+                
+                TempData["Success"] = status == "مكتمل" 
+                    ? "تم تحديث حالة الموعد إلى مكتمل" 
+                    : "تم إلغاء الموعد بنجاح";
+                
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "حدث خطأ أثناء تحديث الموعد: " + ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
     }

@@ -137,5 +137,5 @@ D:\perso\Projcets\GoDent Solution\GoDent\obj\Debug\net8.0\refint\GoDent.dll
 D:\perso\Projcets\GoDent Solution\GoDent\obj\Debug\net8.0\GoDent.pdb
 D:\perso\Projcets\GoDent Solution\GoDent\obj\Debug\net8.0\GoDent.genruntimeconfig.cache
 D:\perso\Projcets\GoDent Solution\GoDent\obj\Debug\net8.0\ref\GoDent.dll
-D:\perso\Projcets\GoDent Solution\GoDent\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\perso\Projcets\GoDent Solution\GoDent\obj\Debug\net8.0\GoDent.sourcelink.json
+D:\perso\Projcets\GoDent Solution\GoDent\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

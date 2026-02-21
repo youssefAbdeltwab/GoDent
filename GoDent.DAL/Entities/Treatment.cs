@@ -46,7 +46,12 @@ namespace GoDent.DAL.Entities
         [Display(Name = "تاريخ الإنشاء")]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
+        [Required(ErrorMessage = "يجب اختيار الزيارة")]
+        [Display(Name = "الزيارة")]
+        public int VisitId { get; set; }
+
         // ── Navigation ──
         public virtual Patient Patient { get; set; } = null!;
+        public virtual Visit Visit { get; set; } = null!;
     }
 }

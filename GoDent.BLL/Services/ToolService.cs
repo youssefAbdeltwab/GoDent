@@ -22,7 +22,7 @@ namespace GoDent.BLL.Services
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Tool> GetToolsByDepartmentIdAsync(int departmentId)
+        public async Task<IEnumerable<Tool>> GetToolsByDepartmentIdAsync(int departmentId)
         {
             return await _context.Tools
                 .Include(t => t.Department)

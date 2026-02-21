@@ -1,17 +1,34 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace GoDent.DAL.Enums
 {
-    /// <summary>
-    /// Categories for clinic expenses. This enables grouping in reports.
-    /// We pre-define the most common categories for a dental clinic.
-    /// </summary>
     public enum ExpenseCategory
     {
+        [Display(Name = "إيجار")]
         Rent = 0,
+
+        [Display(Name = "مواد طبية")]
         Materials = 1,
-        Utilities = 2,
-        Salary = 3,
-        Equipment = 4,
+
+        [Display(Name = "مختبرات")]
+        Labs = 2,
+
+        [Display(Name = "رواتب")]
+        Salaries = 3,
+
+        [Display(Name = "مرافق (كهرباء/ماء)")]
+        Utilities = 4,
+
+        [Display(Name = "صيانة")]
         Maintenance = 5,
-        Other = 6
+
+        [Display(Name = "تسويق")]
+        Marketing = 6,
+
+        [Display(Name = "معدات")]
+        Equipment = 7,
+
+        [Display(Name = "أخرى")]
+        Other = 8
     }
 }

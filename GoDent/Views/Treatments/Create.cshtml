@@ -1,0 +1,70 @@
+@model GoDent.DAL.Entities.Treatment
+
+@{
+    ViewData["Title"] = "إضافة علاج جديد";
+    var visitDate = ViewBag.VisitDate as DateTime?;
+}
+
+<div class="card">
+    <div class="card-header bg-success text-white">
+        <h4><i class="fas fa-tooth"></i> إضافة علاج جديد</h4>
+        <small>للمريض: @ViewBag.PatientName | زيارة: @(visitDate?.ToString("yyyy-MM-dd") ?? "---")</small>
+    </div>
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <input type="hidden" asp-for="VisitId" />
+            <input type="hidden" asp-for="PatientId" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="ToothNumber" class="form-label">رقم السن</label>
+                    <input asp-for="ToothNumber" type="number" min="1" max="32" class="form-control" 
+                           placeholder="اختياري - من 1 إلى 32" />
+                    <small class="text-muted">اتركه فارغاً للإجراءات العامة (مثل التنظيف، الأشعة)</small>
+                    <span asp-validation-for="ToothNumber" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="TreatmentDate" class="form-label">تاريخ العلاج</label>
+                    <input asp-for="TreatmentDate" type="date" class="form-control" />
+                    <span asp-validation-for="TreatmentDate" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">وصف العلاج</label>
+                <input asp-for="Description" class="form-control" 
+                       placeholder="مثال: حشو كمبوزيت، علاج عصب، خلع جراحي" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Cost" class="form-label">التكلفة (ج.م)</label>
+                    <input asp-for="Cost" type="number" min="0" step="0.01" class="form-control" />
+                    <span asp-validation-for="Cost" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Notes" class="form-label">ملاحظات</label>
+                <textarea asp-for="Notes" class="form-control" rows="2"></textarea>
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-start gap-2">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i> حفظ العلاج
+                </button>
+                <a asp-controller="Patients" asp-action="Details" asp-route-id="@ViewBag.PatientId" class="btn btn-secondary">
+                    <i class="fas fa-arrow-right"></i> رجوع
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

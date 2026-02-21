@@ -12,6 +12,7 @@ namespace GoDent.BLL.Service.Abstraction
         Task<Patient> CreatePatientAsync(Patient patient);
         Task<Patient?> UpdatePatientAsync(Patient patient);
         Task<bool> DeletePatientAsync(int id);
+        Task UpdatePatientDebtAsync(int patientId);
 
     }
 }

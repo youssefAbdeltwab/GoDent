@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using GoDent.DAL.Enums;
 
 namespace GoDent.DAL.Entities
@@ -46,10 +47,14 @@ namespace GoDent.DAL.Entities
         [Display(Name = "تاريخ التسجيل")]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
+        [Column(TypeName = "decimal(18,2)")]
+        [Display(Name = "الرصيد المستحق")]
+        public decimal CurrentDebt { get; set; } = 0;
+
         // ── Navigation Properties ──
         public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+        public virtual ICollection<Visit> Visits { get; set; } = new List<Visit>();
         public virtual ICollection<Treatment> Treatments { get; set; } = new List<Treatment>();
         public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
-        public virtual ICollection<ToothHistory> ToothHistories { get; set; } = new List<ToothHistory>();
     }
 }

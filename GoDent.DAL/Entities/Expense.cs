@@ -1,15 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using GoDent.DAL.Enums;
 
 namespace GoDent.DAL.Entities
 {
     /// <summary>
-    /// Tracks clinic expenses (rent, materials, utilities, etc.).
-    /// This is the "cost" side of the Profit & Loss dashboard:
-    ///   Net Profit = Total Income (Payments) - Total Expenses
-    /// 
-    /// Note: Expenses are NOT linked to patients — they are clinic-level costs.
+    /// Records a clinic expense (money out).
+    /// Not linked to patients — these are clinic-level costs.
     /// </summary>
     public class Expense
     {
