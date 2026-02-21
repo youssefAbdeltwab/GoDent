@@ -7,10 +7,12 @@ namespace GoDent.Controllers
     public class PatientsController : Controller
     {
         private readonly IPatientService _patientService;
+        private readonly IVisitService _visitService;
 
-        public PatientsController(IPatientService patientService)
+        public PatientsController(IPatientService patientService, IVisitService visitService)
         {
             _patientService = patientService;
+            _visitService = visitService;
         }
 
 
@@ -32,7 +34,11 @@ namespace GoDent.Controllers
         {
             var patient = await _patientService.GetPatientByIdAsync(id);
             if (patient == null)
-                return BadRequest();
+                return NotFound();
+
+            var visits = await _visitService.GetAllVisitsByPatientIdAsync(id);
+            ViewBag.Visits = visits;
+
             return View(patient);
         }
 

@@ -53,8 +53,8 @@ namespace GoDent.DAL.Entities
 
         // ── Navigation Properties ──
         public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+        public virtual ICollection<Visit> Visits { get; set; } = new List<Visit>();
         public virtual ICollection<Treatment> Treatments { get; set; } = new List<Treatment>();
         public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
-        public virtual ICollection<ToothHistory> ToothHistories { get; set; } = new List<ToothHistory>();
     }
 }

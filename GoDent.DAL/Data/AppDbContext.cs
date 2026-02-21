@@ -16,6 +16,7 @@ namespace GoDent.DAL.Data
         // Each DbSet maps to a table in the database
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<Visit> Visits { get; set; }
         public DbSet<Treatment> Treatments { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Expense> Expenses { get; set; }

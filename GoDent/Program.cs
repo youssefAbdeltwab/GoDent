@@ -20,6 +20,8 @@ namespace GoDent
             builder.Services.AddScoped<IAppointmentService, AppointmentService>();
             builder.Services.AddScoped<IToolService, ToolService>();
             builder.Services.AddScoped<IWhatsAppService, WhatsAppService>();
+            builder.Services.AddScoped<IVisitService, VisitService>();
+            builder.Services.AddScoped<ITreatmentService, TreatmentService>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
