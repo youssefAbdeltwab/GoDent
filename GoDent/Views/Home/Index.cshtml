@@ -1,8 +1,285 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model GoDent.BLL.DTOs.FinanceDashboardDto
+
+@{
+    ViewData["Title"] = "لوحة التحكم";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Date Range Filter -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label fw-bold">من تاريخ</label>
+                <input type="date" name="from" value="@ViewBag.FromDate" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold">إلى تاريخ</label>
+                <input type="date" name="to" value="@ViewBag.ToDate" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-filter"></i> عرض
+                </button>
+            </div>
+            <div class="col-md-3">
+                <a href="/" class="btn btn-outline-secondary w-100">
+                    <i class="fas fa-redo"></i> الشهر الحالي
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
+
+<!-- ═══ Quick Stats Row ═══ -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center h-100 border-0 shadow-sm">
+            <div class="card-body">
+                <div class="mb-2"><i class="fas fa-users fa-2x text-primary"></i></div>
+                <h6 class="text-muted">إجمالي المرضى</h6>
+                <h3 class="fw-bold">@Model.TotalPatients</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center h-100 border-0 shadow-sm">
+            <div class="card-body">
+                <div class="mb-2"><i class="fas fa-calendar-check fa-2x text-info"></i></div>
+                <h6 class="text-muted">مواعيد اليوم</h6>
+                <h3 class="fw-bold">@Model.TodayAppointments</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center h-100 border-0 shadow-sm">
+            <div class="card-body">
+                <div class="mb-2"><i class="fas fa-clock fa-2x text-warning"></i></div>
+                <h6 class="text-muted">ديون معلقة</h6>
+                <h3 class="fw-bold">@Model.PendingClinicDebtsCount</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center h-100 border-0 shadow-sm">
+            <div class="card-body">
+                <div class="mb-2"><i class="fas fa-exclamation-triangle fa-2x text-danger"></i></div>
+                <h6 class="text-muted">ديون متأخرة</h6>
+                <h3 class="fw-bold text-danger">@Model.OverdueClinicDebtsCount</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ Financial Summary Cards ═══ -->
+<div class="row mb-4">
+    <!-- Income -->
+    <div class="col-md-4">
+        <div class="card border-start border-success border-4 h-100 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">الإيرادات</h6>
+                        <h3 class="text-success fw-bold mb-0">@Model.TotalIncome.ToString("N2")</h3>
+                        <small class="text-muted">ج.م</small>
+                    </div>
+                    <div>
+                        <i class="fas fa-arrow-down fa-2x text-success opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Expenses -->
+    <div class="col-md-4">
+        <div class="card border-start border-danger border-4 h-100 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">المصروفات</h6>
+                        <h3 class="text-danger fw-bold mb-0">@Model.TotalExpenses.ToString("N2")</h3>
+                        <small class="text-muted">ج.م</small>
+                    </div>
+                    <div>
+                        <i class="fas fa-arrow-up fa-2x text-danger opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profit / Loss -->
+    <div class="col-md-4">
+        @{
+            var profitLoss = Model.ProfitOrLoss;
+            var plColor = profitLoss >= 0 ? "success" : "danger";
+            var plIcon = profitLoss >= 0 ? "fa-chart-line" : "fa-chart-line fa-flip-vertical";
+            var plLabel = profitLoss >= 0 ? "ربح" : "خسارة";
+        }
+        <div class="card border-start border-@plColor border-4 h-100 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">صافي @plLabel</h6>
+                        <h3 class="text-@plColor fw-bold mb-0">@Math.Abs(profitLoss).ToString("N2")</h3>
+                        <small class="text-muted">ج.م</small>
+                    </div>
+                    <div>
+                        <i class="fas @plIcon fa-2x text-@plColor opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ Debt Summary Row ═══ -->
+<div class="row mb-4">
+    <!-- Patient Debts (money owed TO the clinic) -->
+    <div class="col-md-6">
+        <div class="card border-start border-warning border-4 h-100 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">ديون المرضى <small>(مستحقات للعيادة)</small></h6>
+                        <h3 class="text-warning fw-bold mb-0">@Model.TotalPatientDebts.ToString("N2") <small class="fs-6">ج.م</small></h3>
+                    </div>
+                    <div>
+                        <a asp-controller="Patients" asp-action="Index" class="btn btn-outline-warning btn-sm">
+                            <i class="fas fa-external-link-alt"></i> عرض
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clinic Debts (money the clinic owes) -->
+    <div class="col-md-6">
+        <div class="card border-start border-danger border-4 h-100 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">ديون العيادة <small>(مستحقات على العيادة)</small></h6>
+                        <h3 class="text-danger fw-bold mb-0">@Model.TotalClinicDebts.ToString("N2") <small class="fs-6">ج.م</small></h3>
+                    </div>
+                    <div>
+                        <a asp-controller="ClinicDebts" asp-action="Index" class="btn btn-outline-danger btn-sm">
+                            <i class="fas fa-external-link-alt"></i> عرض
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ Monthly Chart ═══ -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="fas fa-chart-bar"></i> الإيرادات والمصروفات - آخر 6 أشهر</h5>
+    </div>
+    <div class="card-body">
+        <canvas id="financeChart" height="100"></canvas>
+    </div>
+</div>
+
+<!-- ═══ Quick Links ═══ -->
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <a asp-controller="Expenses" asp-action="Create" class="text-decoration-none">
+            <div class="card text-center border-0 shadow-sm h-100 hover-card">
+                <div class="card-body">
+                    <i class="fas fa-plus-circle fa-2x text-danger mb-2"></i>
+                    <h6>إضافة مصروف</h6>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4 mb-3">
+        <a asp-controller="ClinicDebts" asp-action="Create" class="text-decoration-none">
+            <div class="card text-center border-0 shadow-sm h-100 hover-card">
+                <div class="card-body">
+                    <i class="fas fa-plus-circle fa-2x text-warning mb-2"></i>
+                    <h6>إضافة دين</h6>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4 mb-3">
+        <a asp-controller="Appointments" asp-action="Index" class="text-decoration-none">
+            <div class="card text-center border-0 shadow-sm h-100 hover-card">
+                <div class="card-body">
+                    <i class="fas fa-calendar-plus fa-2x text-info mb-2"></i>
+                    <h6>المواعيد</h6>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var ctx = document.getElementById('financeChart').getContext('2d');
+        var labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyBreakdown.Select(m => m.Month)));
+        var incomeData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyBreakdown.Select(m => m.Income)));
+        var expenseData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyBreakdown.Select(m => m.Expenses)));
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'الإيرادات',
+                        data: incomeData,
+                        backgroundColor: 'rgba(40, 167, 69, 0.7)',
+                        borderColor: 'rgba(40, 167, 69, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'المصروفات',
+                        data: expenseData,
+                        backgroundColor: 'rgba(220, 53, 69, 0.7)',
+                        borderColor: 'rgba(220, 53, 69, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString() + ' ج.م';
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y.toLocaleString() + ' ج.م';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}
+
+<style>
+    .hover-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+        transition: all .2s ease;
+    }
+    .hover-card {
+        transition: all .2s ease;
+    }
+</style>

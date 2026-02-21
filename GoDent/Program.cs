@@ -23,6 +23,9 @@ namespace GoDent
             builder.Services.AddScoped<IVisitService, VisitService>();
             builder.Services.AddScoped<ITreatmentService, TreatmentService>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
+            builder.Services.AddScoped<IExpenseService, ExpenseService>();
+            builder.Services.AddScoped<IClinicDebtService, ClinicDebtService>();
+            builder.Services.AddScoped<IFinanceDashboardService, FinanceDashboardService>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();

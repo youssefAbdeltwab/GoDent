@@ -1,0 +1,139 @@
+@model IEnumerable<GoDent.DAL.Entities.ClinicDebt>
+
+@using System.ComponentModel.DataAnnotations
+@using System.Reflection
+
+@{
+    ViewData["Title"] = "ديون العيادة";
+    decimal totalPending = ViewBag.TotalPending ?? 0m;
+}
+
+@functions {
+    string GetDisplayName(Enum value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attr = field?.GetCustomAttribute<DisplayAttribute>();
+        return attr?.Name ?? value.ToString();
+    }
+
+    string GetStatusBadge(GoDent.DAL.Enums.DebtStatus status)
+    {
+        return status switch
+        {
+            GoDent.DAL.Enums.DebtStatus.Pending => "bg-warning text-dark",
+            GoDent.DAL.Enums.DebtStatus.Paid => "bg-success",
+            GoDent.DAL.Enums.DebtStatus.Overdue => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-file-invoice-dollar"></i> ديون العيادة</h2>
+    <div class="d-flex gap-2">
+        <form asp-action="GenerateRecurring" method="post" class="d-inline">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-info" onclick="return confirm('هل تريد توليد الديون المتكررة لهذا الشهر؟');">
+                <i class="fas fa-sync-alt"></i> توليد الديون المتكررة
+            </button>
+        </form>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus"></i> إضافة دين
+        </a>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- Summary Card -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card border-danger">
+            <div class="card-body text-center">
+                <h6 class="text-muted">إجمالي الديون المعلقة والمتأخرة</h6>
+                <h3 class="text-danger fw-bold">@totalPending.ToString("N2") ج.م</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Debts Table -->
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>الدائن</th>
+                    <th>الوصف</th>
+                    <th>التصنيف</th>
+                    <th>المبلغ</th>
+                    <th>تاريخ الاستحقاق</th>
+                    <th>الحالة</th>
+                    <th>متكرر</th>
+                    <th>إجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var debt in Model)
+                {
+                    <tr>
+                        <td>@debt.CreditorName</td>
+                        <td>@debt.Description</td>
+                        <td><span class="badge bg-secondary">@GetDisplayName(debt.Category)</span></td>
+                        <td class="fw-bold text-danger">@debt.Amount.ToString("N2") ج.م</td>
+                        <td>@debt.DueDate.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            <span class="badge @GetStatusBadge(debt.Status)">
+                                @GetDisplayName(debt.Status)
+                            </span>
+                        </td>
+                        <td>
+                            @if (debt.IsRecurring)
+                            {
+                                <span class="badge bg-info">
+                                    <i class="fas fa-redo"></i> يوم @debt.RecurrenceDay
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">---</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                @if (debt.Status != GoDent.DAL.Enums.DebtStatus.Paid)
+                                {
+                                    <form asp-action="MarkAsPaid" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@debt.Id" />
+                                        <button type="submit" class="btn btn-success btn-sm" title="تسديد"
+                                                onclick="return confirm('هل تريد تسديد هذا الدين؟');">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    </form>
+                                }
+                                <a asp-action="Edit" asp-route-id="@debt.Id" class="btn btn-warning btn-sm" title="تعديل">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form asp-action="Delete" method="post" class="d-inline"
+                                      onsubmit="return confirm('هل أنت متأكد من حذف هذا الدين؟');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@debt.Id" />
+                                    <button type="submit" class="btn btn-danger btn-sm" title="حذف">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

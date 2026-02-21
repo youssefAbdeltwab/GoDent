@@ -20,6 +20,7 @@ namespace GoDent.DAL.Data
         public DbSet<Treatment> Treatments { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Expense> Expenses { get; set; }
+        public DbSet<ClinicDebt> ClinicDebts { get; set; }
         public DbSet<ToothHistory> ToothHistories { get; set; }
         public DbSet<Tool> Tools { get; set; }
         public DbSet<Department> Departments { get; set; }
