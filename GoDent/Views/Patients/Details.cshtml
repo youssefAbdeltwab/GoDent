@@ -1,8 +1,12 @@
 @model GoDent.DAL.Entities.Patient
+@inject GoDent.BLL.Service.Abstraction.IWhatsAppService whatsAppService
 
 @{
     ViewData["Title"] = "تفاصيل المريض";
     var visits = ViewBag.Visits as IEnumerable<GoDent.DAL.Entities.Visit> ?? new List<GoDent.DAL.Entities.Visit>();
+    var payments = ViewBag.Payments as IEnumerable<GoDent.DAL.Entities.Payment> ?? new List<GoDent.DAL.Entities.Payment>();
+    decimal totalTreatmentCost = ViewBag.TotalTreatmentCost ?? 0m;
+    decimal totalPayments = ViewBag.TotalPayments ?? 0m;
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -75,6 +79,55 @@
                 </dl>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Financial Summary Card -->
+<div class="card mb-4 border-info">
+    <div class="card-header bg-info text-white">
+        <h5 class="mb-0"><i class="fas fa-calculator"></i> الملخص المالي</h5>
+    </div>
+    <div class="card-body">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <div class="border rounded p-3">
+                    <h6 class="text-muted">إجمالي التكاليف</h6>
+                    <h4 class="text-primary">@totalTreatmentCost.ToString("N2") ج.م</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="border rounded p-3">
+                    <h6 class="text-muted">إجمالي المدفوعات</h6>
+                    <h4 class="text-success">@totalPayments.ToString("N2") ج.م</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="border rounded p-3">
+                    <h6 class="text-muted">الرصيد المستحق</h6>
+                    @if (Model.CurrentDebt > 0)
+                    {
+                        <h4 class="text-danger">@Model.CurrentDebt.ToString("N2") ج.م</h4>
+                    }
+                    else
+                    {
+                        <h4 class="text-success">0.00 ج.م</h4>
+                    }
+                </div>
+            </div>
+        </div>
+        
+        @if (Model.CurrentDebt > 0)
+        {
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <a href="@whatsAppService.GenerateDebtReminderUrl(Model, Model.CurrentDebt)" 
+                       target="_blank" 
+                       class="btn btn-warning">
+                        <i class="fab fa-whatsapp"></i> تذكير المريض بالرصيد عبر واتساب
+                    </a>
+                </div>
+            </div>
+        }
     </div>
 </div>
 
@@ -200,4 +253,63 @@ else
             </div>
         </div>
     }
+}
+
+<!-- Payments Section -->
+<div class="d-flex justify-content-between align-items-center mb-3 mt-4">
+    <h4><i class="fas fa-money-bill-wave"></i> سجل المدفوعات</h4>
+    <a asp-controller="Payments" asp-action="Create" asp-route-patientId="@Model.Id" class="btn btn-success">
+        <i class="fas fa-plus"></i> تسجيل دفعة جديدة
+    </a>
+</div>
+
+@if (!payments.Any())
+{
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> لا توجد مدفوعات مسجلة لهذا المريض.
+    </div>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-striped table-hover">
+                <thead class="table-success">
+                    <tr>
+                        <th style="width: 150px;">تاريخ الدفع</th>
+                        <th style="width: 150px;">المبلغ</th>
+                        <th>ملاحظات</th>
+                        <th style="width: 100px;">إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var payment in payments)
+                    {
+                        <tr>
+                            <td>@payment.PaymentDate.ToString("yyyy-MM-dd")</td>
+                            <td class="text-success fw-bold">@payment.Amount.ToString("N2") ج.م</td>
+                            <td>@(payment.Notes ?? "---")</td>
+                            <td>
+                                <form asp-controller="Payments" asp-action="Delete" method="post" class="d-inline"
+                                      onsubmit="return confirm('هل أنت متأكد من حذف هذه الدفعة؟');">
+                                    <input type="hidden" name="id" value="@payment.Id" />
+                                    <input type="hidden" name="patientId" value="@Model.Id" />
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i> حذف
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr class="table-success">
+                        <td class="text-end"><strong>الإجمالي:</strong></td>
+                        <td class="fw-bold">@payments.Sum(p => p.Amount).ToString("N2") ج.م</td>
+                        <td colspan="2"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
 }
