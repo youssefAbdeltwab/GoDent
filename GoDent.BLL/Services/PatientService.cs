@@ -75,6 +75,25 @@ namespace GoDent.BLL.Services
             return true;
         }
 
+        public async Task UpdatePatientDebtAsync(int patientId)
+        {
+            var patient = await _context.Patients
+                .Include(p => p.Treatments)
+                .Include(p => p.Payments)
+                .FirstOrDefaultAsync(p => p.Id == patientId);
+
+            if (patient != null)
+            {
+                // Calculate debt: Total treatments cost - Total payments
+                var totalTreatmentCost = patient.Treatments.Sum(t => t.Cost);
+                var totalPayments = patient.Payments.Sum(p => p.Amount);
+                patient.CurrentDebt = totalTreatmentCost - totalPayments;
+
+                _context.Patients.Update(patient);
+                await _context.SaveChangesAsync();
+            }
+        }
+
        
     }
 }

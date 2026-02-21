@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace GoDent.DAL.Enums
 {
     /// <summary>
@@ -7,9 +9,16 @@ namespace GoDent.DAL.Enums
     /// </summary>
     public enum AppointmentStatus
     {
+        [Display(Name = "مجدول")]
         Scheduled = 0,
+        
+        [Display(Name = "مكتمل")]
         Completed = 1,
+        
+        [Display(Name = "ملغي")]
         Cancelled = 2,
+        
+        [Display(Name = "لم يحضر")]
         NoShow = 3
     }
 }

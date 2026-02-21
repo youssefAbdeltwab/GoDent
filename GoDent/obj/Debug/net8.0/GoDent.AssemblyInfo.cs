@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GoDent")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e5353d28cf5b681be1ec6a59d67aecfe1e0a300e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f528b3e905caf74e1ac0207dc906fc22dd552f4c")]
 [assembly: System.Reflection.AssemblyProductAttribute("GoDent")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GoDent")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -20,18 +20,21 @@
             </div>
 
             <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label asp-for="AppointmentDate" class="form-label">التاريخ والوقت</label>
-                    <input asp-for="AppointmentDate" type="datetime-local" value="@(ViewData["Date"])" class="form-control" />
+                <div class="col-md-4 mb-3">
+                    <label asp-for="AppointmentDate" class="form-label">التاريخ</label>
+                    <input asp-for="AppointmentDate" type="date" class="form-control" />
                     <span asp-validation-for="AppointmentDate" class="text-danger"></span>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-4 mb-3">
+                    <label asp-for="StartTime" class="form-label">وقت البداية</label>
+                    <input asp-for="StartTime" type="time" class="form-control" />
+                    <span asp-validation-for="StartTime" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4 mb-3">
                     <label asp-for="Status" class="form-label">الحالة</label>
-                    <select asp-for="Status" class="form-select">
-                        <option value="مجدول">مجدول</option>
-                        <option value="مكتمل">مكتمل</option>
-                        <option value="ملغي">ملغي</option>
+                    <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<GoDent.DAL.Enums.AppointmentStatus>()">
                     </select>
                 </div>
             </div>

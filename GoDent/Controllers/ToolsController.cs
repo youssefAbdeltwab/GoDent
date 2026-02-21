@@ -10,18 +10,36 @@ namespace GoDent.Controllers
     public class ToolsController : Controller
     {
         private readonly IToolService _toolService;
+        private readonly IWhatsAppService _whatsAppService;
         private readonly AppDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public ToolsController(IToolService toolService, AppDbContext context)
+        public ToolsController(IToolService toolService, IWhatsAppService whatsAppService, AppDbContext context, IConfiguration configuration)
         {
             _toolService = toolService;
+            _whatsAppService = whatsAppService;
             _context = context;
+            _configuration = configuration;
         }
 
         // GET: Tools
         public async Task<IActionResult> Index()
         {
             var tools = await _toolService.GetAllToolsAsync();
+            ViewData["Departments"] = await _context.Departments.ToListAsync();
+            return View(tools);
+        }
+
+        // GET: Tools/ByDepartment/5
+        public async Task<IActionResult> ByDepartment(int id)
+        {
+            var department = await _context.Departments.FindAsync(id);
+            if (department == null)
+                return BadRequest();
+
+            var tools = await _toolService.GetToolsByDepartmentIdAsync(id);
+            ViewData["DepartmentName"] = department.Name;
+            ViewData["Departments"] = await _context.Departments.ToListAsync();
             return View(tools);
         }
 
@@ -78,7 +96,20 @@ namespace GoDent.Controllers
 
             if (ModelState.IsValid)
             {
-                await _toolService.UpdateToolAsync(tool);
+                var updatedTool = await _toolService.UpdateToolAsync(tool);
+                
+                // Check for shortage and generate WhatsApp alert
+                if (updatedTool != null && updatedTool.Quantity <= updatedTool.MinQuantity)
+                {
+                    var doctorPhone = _configuration["WhatsApp:DoctorPhone"];
+                    if (!string.IsNullOrEmpty(doctorPhone))
+                    {
+                        var whatsappUrl = _whatsAppService.GenerateShortageAlertUrl(updatedTool);
+                        TempData["WhatsAppAlert"] = whatsappUrl;
+                        TempData["ShortageToolName"] = updatedTool.Name;
+                    }
+                }
+                
                 TempData["Success"] = "تم تحديث الأداة بنجاح";
                 return RedirectToAction(nameof(Index));
             }
