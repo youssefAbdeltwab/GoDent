@@ -19,6 +19,7 @@ namespace GoDent.BLL.Services
         public async Task<IEnumerable<Treatment>> GetTreatmentsByVisitIdAsync(int visitId)
         {
             return await _context.Treatments
+                .Include(t => t.Doctor)
                 .Where(t => t.VisitId == visitId)
                 .OrderByDescending(t => t.TreatmentDate)
                 .ToListAsync();
@@ -29,6 +30,7 @@ namespace GoDent.BLL.Services
             return await _context.Treatments
                 .Include(t => t.Visit)
                 .Include(t => t.Patient)
+                .Include(t => t.Doctor)
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
 
@@ -51,6 +53,9 @@ namespace GoDent.BLL.Services
             existingTreatment.Cost = treatment.Cost;
             existingTreatment.TreatmentDate = treatment.TreatmentDate;
             existingTreatment.Notes = treatment.Notes;
+            existingTreatment.DoctorId = treatment.DoctorId;
+            existingTreatment.HasLabCost = treatment.HasLabCost;
+            existingTreatment.LabCost = treatment.LabCost;
 
             _context.Treatments.Update(existingTreatment);
             await _context.SaveChangesAsync();

@@ -12,8 +12,10 @@ namespace GoDent
             var builder = WebApplication.CreateBuilder(args);
 
             // ── Register AppDbContext with SQLite ──
+            // Use absolute path for SQLite database to work in hosting environments
+            var dbPath = Path.Combine(builder.Environment.ContentRootPath, "GoDent.db");
             builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlite($"Data Source={dbPath}"));
 
             // ── Register BLL Services ──
             builder.Services.AddScoped<IPatientService, PatientService>();
@@ -26,18 +28,35 @@ namespace GoDent
             builder.Services.AddScoped<IExpenseService, ExpenseService>();
             builder.Services.AddScoped<IClinicDebtService, ClinicDebtService>();
             builder.Services.AddScoped<IFinanceDashboardService, FinanceDashboardService>();
+            builder.Services.AddScoped<IDoctorService, DoctorService>();
+
+            // ── Register Backup Service ──
+            var backupDir = Path.Combine(builder.Environment.ContentRootPath, "Backups");
+            builder.Services.AddSingleton<IBackupService>(sp => new BackupService(dbPath, backupDir));
+            builder.Services.AddHostedService<GoDent.Services.BackupSchedulerService>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
 
+            // Ensure database is created and migrated
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                db.Database.Migrate();
+            }
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
-                app.UseExceptionHandler("/Home/Error");
+                // TEMPORARY: Enable detailed errors for debugging deployment issues
+                // Remove this after fixing the issue!
+                app.UseDeveloperExceptionPage();
+                
+                // app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                // app.UseHsts();
             }
 
             app.UseHttpsRedirection();

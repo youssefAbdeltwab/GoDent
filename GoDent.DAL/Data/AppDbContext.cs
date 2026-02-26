@@ -24,6 +24,7 @@ namespace GoDent.DAL.Data
         public DbSet<ToothHistory> ToothHistories { get; set; }
         public DbSet<Tool> Tools { get; set; }
         public DbSet<Department> Departments { get; set; }
+        public DbSet<Doctor> Doctors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

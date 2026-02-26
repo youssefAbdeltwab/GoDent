@@ -1,0 +1,140 @@
+@model GoDent.DAL.Entities.Doctor
+
+@{
+    ViewData["Title"] = "تفاصيل الطبيب - " + Model.FullName;
+    var earnings = ViewBag.Earnings as GoDent.BLL.Service.Abstraction.DoctorEarningsDto;
+    var fromDate = (DateTime)ViewBag.FromDate;
+    var toDate = (DateTime)ViewBag.ToDate;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-user-md"></i> تفاصيل الطبيب</h2>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-right"></i> رجوع للقائمة
+    </a>
+</div>
+
+<!-- Doctor Info Card -->
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="fas fa-id-card"></i> بيانات الطبيب</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <dl class="row">
+                    <dt class="col-sm-4">الاسم:</dt>
+                    <dd class="col-sm-8">@Model.FullName</dd>
+
+                    <dt class="col-sm-4">رقم الهاتف:</dt>
+                    <dd class="col-sm-8">@(Model.PhoneNumber ?? "---")</dd>
+
+                    <dt class="col-sm-4">التخصص:</dt>
+                    <dd class="col-sm-8">@(Model.Specialty ?? "---")</dd>
+                </dl>
+            </div>
+            <div class="col-md-6">
+                <dl class="row">
+                    <dt class="col-sm-4">الحالة:</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.IsActive)
+                        {
+                            <span class="badge bg-success">نشط</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">غير نشط</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-4">ملاحظات:</dt>
+                    <dd class="col-sm-8">@(Model.Notes ?? "---")</dd>
+
+                    <dt class="col-sm-4">تاريخ الإضافة:</dt>
+                    <dd class="col-sm-8">@Model.CreatedAt.ToString("yyyy-MM-dd")</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Earnings Filter -->
+<div class="card mb-4">
+    <div class="card-header bg-info text-white">
+        <h5 class="mb-0"><i class="fas fa-calculator"></i> حساب النسبة</h5>
+    </div>
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end mb-4">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div class="col-md-4">
+                <label class="form-label">من تاريخ</label>
+                <input type="date" name="from" class="form-control" value="@fromDate.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">إلى تاريخ</label>
+                <input type="date" name="to" class="form-control" value="@toDate.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-info">
+                    <i class="fas fa-filter"></i> عرض
+                </button>
+            </div>
+        </form>
+
+        @if (earnings != null)
+        {
+            <div class="row text-center mb-3">
+                <div class="col-md-3">
+                    <div class="border rounded p-3">
+                        <h6 class="text-muted">عدد العلاجات</h6>
+                        <h4 class="text-primary">@earnings.TreatmentCount</h4>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="border rounded p-3">
+                        <h6 class="text-muted">إجمالي التكاليف</h6>
+                        <h4 class="text-dark">@earnings.TotalCost.ToString("N2") ج.م</h4>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="border rounded p-3">
+                        <h6 class="text-muted">تكلفة المعمل</h6>
+                        <h4 class="text-warning">@earnings.TotalLabCost.ToString("N2") ج.م</h4>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="border rounded p-3">
+                        <h6 class="text-muted">صافي التكلفة</h6>
+                        <h4 class="text-info">@earnings.NetCost.ToString("N2") ج.م</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row text-center">
+                <div class="col-md-6">
+                    <div class="card border-success">
+                        <div class="card-body">
+                            <h5 class="text-muted">نصيب الطبيب (40%)</h5>
+                            <h2 class="text-success">@earnings.DoctorShare.ToString("N2") ج.م</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card border-primary">
+                        <div class="card-body">
+                            <h5 class="text-muted">نصيب العيادة (60%)</h5>
+                            <h2 class="text-primary">@earnings.ClinicShare.ToString("N2") ج.م</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-light mt-3 text-center">
+                <small>
+                    <i class="fas fa-info-circle"></i>
+                    المعادلة: (إجمالي التكاليف - تكلفة المعمل) × 40% = نصيب الطبيب
+                </small>
+            </div>
+        }
+    </div>
+</div>

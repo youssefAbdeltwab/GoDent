@@ -18,6 +18,7 @@ namespace GoDent.BLL.Services
         {
             return await _context.Visits
                 .Include(v => v.Treatments)
+                    .ThenInclude(t => t.Doctor)
                 .Where(v => v.PatientId == patientId)
                 .OrderByDescending(v => v.VisitDate)
                 .ToListAsync();
@@ -28,6 +29,7 @@ namespace GoDent.BLL.Services
             return await _context.Visits
                 .Include(v => v.Patient)
                 .Include(v => v.Treatments)
+                    .ThenInclude(t => t.Doctor)
                 .FirstOrDefaultAsync(v => v.Id == id);
         }
 

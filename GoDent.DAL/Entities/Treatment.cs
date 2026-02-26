@@ -50,8 +50,21 @@ namespace GoDent.DAL.Entities
         [Display(Name = "الزيارة")]
         public int VisitId { get; set; }
 
+        [Required(ErrorMessage = "يجب اختيار الطبيب")]
+        [Display(Name = "الطبيب")]
+        public int DoctorId { get; set; }
+
+        [Display(Name = "يوجد تكلفة معمل؟")]
+        public bool HasLabCost { get; set; } = false;
+
+        [Column(TypeName = "decimal(18,2)")]
+        [Range(0, double.MaxValue, ErrorMessage = "تكلفة المعمل يجب أن تكون قيمة موجبة")]
+        [Display(Name = "تكلفة المعمل (ج.م)")]
+        public decimal LabCost { get; set; } = 0;
+
         // ── Navigation ──
         public virtual Patient Patient { get; set; } = null!;
         public virtual Visit Visit { get; set; } = null!;
+        public virtual Doctor Doctor { get; set; } = null!;
     }
 }

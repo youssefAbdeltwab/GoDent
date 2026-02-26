@@ -9,15 +9,18 @@ namespace GoDent.Controllers
         private readonly ITreatmentService _treatmentService;
         private readonly IVisitService _visitService;
         private readonly IPatientService _patientService;
+        private readonly IDoctorService _doctorService;
 
         public TreatmentsController(
             ITreatmentService treatmentService,
             IVisitService visitService,
-            IPatientService patientService)
+            IPatientService patientService,
+            IDoctorService doctorService)
         {
             _treatmentService = treatmentService;
             _visitService = visitService;
             _patientService = patientService;
+            _doctorService = doctorService;
         }
 
         // GET: Treatments/Create?visitId=5
@@ -31,6 +34,7 @@ namespace GoDent.Controllers
             ViewBag.PatientId = visit.PatientId;
             ViewBag.PatientName = visit.Patient?.FullName;
             ViewBag.VisitDate = visit.VisitDate;
+            ViewBag.Doctors = await _doctorService.GetActiveDoctorsAsync();
 
             var treatment = new Treatment
             {
@@ -50,6 +54,11 @@ namespace GoDent.Controllers
             // Remove navigation property validation
             ModelState.Remove("Patient");
             ModelState.Remove("Visit");
+            ModelState.Remove("Doctor");
+
+            // Clear lab cost if not flagged
+            if (!treatment.HasLabCost)
+                treatment.LabCost = 0;
 
             // Validate ToothNumber range
             if (treatment.ToothNumber.HasValue && (treatment.ToothNumber < 1 || treatment.ToothNumber > 32))
@@ -69,6 +78,7 @@ namespace GoDent.Controllers
             ViewBag.PatientId = treatment.PatientId;
             ViewBag.PatientName = visit?.Patient?.FullName;
             ViewBag.VisitDate = visit?.VisitDate;
+            ViewBag.Doctors = await _doctorService.GetActiveDoctorsAsync();
 
             return View(treatment);
         }
@@ -84,6 +94,7 @@ namespace GoDent.Controllers
             ViewBag.PatientId = treatment.PatientId;
             ViewBag.PatientName = treatment.Patient?.FullName;
             ViewBag.VisitDate = treatment.Visit?.VisitDate;
+            ViewBag.Doctors = await _doctorService.GetActiveDoctorsAsync();
 
             return View(treatment);
         }
@@ -99,6 +110,11 @@ namespace GoDent.Controllers
             // Remove navigation property validation
             ModelState.Remove("Patient");
             ModelState.Remove("Visit");
+            ModelState.Remove("Doctor");
+
+            // Clear lab cost if not flagged
+            if (!treatment.HasLabCost)
+                treatment.LabCost = 0;
 
             // Validate ToothNumber range
             if (treatment.ToothNumber.HasValue && (treatment.ToothNumber < 1 || treatment.ToothNumber > 32))
@@ -118,6 +134,7 @@ namespace GoDent.Controllers
             ViewBag.PatientId = treatment.PatientId;
             ViewBag.PatientName = treatment.Patient?.FullName;
             ViewBag.VisitDate = visit?.VisitDate;
+            ViewBag.Doctors = await _doctorService.GetActiveDoctorsAsync();
 
             return View(treatment);
         }

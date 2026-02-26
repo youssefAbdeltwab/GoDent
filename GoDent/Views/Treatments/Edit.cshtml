@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "تعديل العلاج";
     var visitDate = ViewBag.VisitDate as DateTime?;
+    var doctors = ViewBag.Doctors as IEnumerable<GoDent.DAL.Entities.Doctor> ?? new List<GoDent.DAL.Entities.Doctor>();
 }
 
 <div class="card">
@@ -19,14 +20,26 @@
             <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
             <div class="row">
-                <div class="col-md-6 mb-3">
+                <div class="col-md-4 mb-3">
+                    <label asp-for="DoctorId" class="form-label">الطبيب</label>
+                    <select asp-for="DoctorId" class="form-select">
+                        <option value="">-- اختر الطبيب --</option>
+                        @foreach (var doctor in doctors)
+                        {
+                            <option value="@doctor.Id">@doctor.FullName</option>
+                        }
+                    </select>
+                    <span asp-validation-for="DoctorId" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4 mb-3">
                     <label asp-for="ToothNumber" class="form-label">رقم السن</label>
                     <input asp-for="ToothNumber" type="number" min="1" max="32" class="form-control" />
                     <small class="text-muted">اتركه فارغاً للإجراءات العامة (مثل التنظيف، الأشعة)</small>
                     <span asp-validation-for="ToothNumber" class="text-danger"></span>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-4 mb-3">
                     <label asp-for="TreatmentDate" class="form-label">تاريخ العلاج</label>
                     <input asp-for="TreatmentDate" type="date" class="form-control" />
                     <span asp-validation-for="TreatmentDate" class="text-danger"></span>
@@ -40,10 +53,24 @@
             </div>
 
             <div class="row">
-                <div class="col-md-6 mb-3">
+                <div class="col-md-4 mb-3">
                     <label asp-for="Cost" class="form-label">التكلفة (ج.م)</label>
                     <input asp-for="Cost" type="number" min="0" step="0.01" class="form-control" />
                     <span asp-validation-for="Cost" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label asp-for="HasLabCost" class="form-label">تكلفة معمل؟</label>
+                    <div class="form-check form-switch mt-2">
+                        <input asp-for="HasLabCost" class="form-check-input" id="hasLabCostSwitch" />
+                        <label class="form-check-label" for="hasLabCostSwitch">يوجد تكلفة معمل</label>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3" id="labCostDiv" style="display: none;">
+                    <label asp-for="LabCost" class="form-label">تكلفة المعمل (ج.م)</label>
+                    <input asp-for="LabCost" type="number" min="0" step="0.01" class="form-control" />
+                    <span asp-validation-for="LabCost" class="text-danger"></span>
                 </div>
             </div>
 
@@ -67,4 +94,16 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('hasLabCostSwitch').addEventListener('change', function () {
+            document.getElementById('labCostDiv').style.display = this.checked ? 'block' : 'none';
+            if (!this.checked) {
+                document.getElementById('LabCost').value = '0';
+            }
+        });
+        // On page load
+        if (document.getElementById('hasLabCostSwitch').checked) {
+            document.getElementById('labCostDiv').style.display = 'block';
+        }
+    </script>
 }
