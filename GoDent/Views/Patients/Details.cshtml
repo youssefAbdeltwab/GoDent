@@ -200,19 +200,16 @@ else
                                 <th>الطبيب</th>
                                 <th style="width: 100px;">التكلفة</th>
                                 <th style="width: 100px;">المعمل</th>
-                                <th style="width: 100px;">نصيب الطبيب<br/><small>(40%)</small></th>
-                                <th style="width: 100px;">نصيب العيادة<br/><small>(60%)</small></th>
+                                <th style="width: 100px;">الصافي</th>
+                                <th style="width: 100px;">الطبيب 40%</th>
+                                <th style="width: 100px;">العيادة 60%</th>
                                 <th style="width: 100px;">التاريخ</th>
-                                <th style="width: 90px;">إجراءات</th>
+                                <th style="width: 100px;">إجراءات</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var treatment in visit.Treatments)
                             {
-                                var labCost = treatment.HasLabCost ? treatment.LabCost : 0m;
-                                var netCost = treatment.Cost - labCost;
-                                var doctorShare = netCost * 0.40m;
-                                var clinicShare = netCost * 0.60m;
                                 <tr>
                                     <td class="text-center">
                                         @if (treatment.ToothNumber.HasValue)
@@ -226,21 +223,23 @@ else
                                     </td>
                                     <td>@treatment.Description</td>
                                     <td>
-                                        <span class="badge bg-primary">@(treatment.Doctor?.FullName ?? "---")</span>
+                                        <i class="fas fa-user-md text-primary"></i>
+                                        @(treatment.Doctor?.FullName ?? "---")
                                     </td>
                                     <td class="text-center">@treatment.Cost.ToString("N2")</td>
                                     <td class="text-center">
-                                        @if (treatment.HasLabCost)
+                                        @if (treatment.HasLabCost && treatment.LabCost.HasValue)
                                         {
-                                            <span class="text-warning">@treatment.LabCost.ToString("N2")</span>
+                                            <span class="text-danger">@treatment.LabCost.Value.ToString("N2")</span>
                                         }
                                         else
                                         {
                                             <span class="text-muted">---</span>
                                         }
                                     </td>
-                                    <td class="text-center text-success">@doctorShare.ToString("N2")</td>
-                                    <td class="text-center text-primary">@clinicShare.ToString("N2")</td>
+                                    <td class="text-center fw-bold">@treatment.NetCost.ToString("N2")</td>
+                                    <td class="text-center text-warning">@treatment.DoctorShare.ToString("N2")</td>
+                                    <td class="text-center text-success">@treatment.ClinicShare.ToString("N2")</td>
                                     <td class="text-center">@treatment.TreatmentDate.ToString("yyyy-MM-dd")</td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
@@ -263,11 +262,12 @@ else
                         </tbody>
                         <tfoot>
                             <tr class="table-primary">
-                                <td colspan="3" class="text-end"><strong>إجمالي تكلفة الزيارة:</strong></td>
+                                <td colspan="3" class="text-end"><strong>إجمالي الزيارة:</strong></td>
                                 <td class="text-center"><strong>@visit.Treatments.Sum(t => t.Cost).ToString("N2")</strong></td>
-                                <td class="text-center"><strong>@visit.Treatments.Where(t => t.HasLabCost).Sum(t => t.LabCost).ToString("N2")</strong></td>
-                                <td class="text-center text-success"><strong>@visit.Treatments.Sum(t => (t.Cost - (t.HasLabCost ? t.LabCost : 0m)) * 0.40m).ToString("N2")</strong></td>
-                                <td class="text-center text-primary"><strong>@visit.Treatments.Sum(t => (t.Cost - (t.HasLabCost ? t.LabCost : 0m)) * 0.60m).ToString("N2")</strong></td>
+                                <td class="text-center"><strong>@visit.Treatments.Where(t => t.HasLabCost).Sum(t => t.LabCost ?? 0).ToString("N2")</strong></td>
+                                <td class="text-center"><strong>@visit.Treatments.Sum(t => t.NetCost).ToString("N2")</strong></td>
+                                <td class="text-center"><strong>@visit.Treatments.Sum(t => t.DoctorShare).ToString("N2")</strong></td>
+                                <td class="text-center"><strong>@visit.Treatments.Sum(t => t.ClinicShare).ToString("N2")</strong></td>
                                 <td colspan="2"></td>
                             </tr>
                         </tfoot>

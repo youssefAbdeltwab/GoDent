@@ -17,7 +17,7 @@ namespace GoDent.BLL.Services
         public async Task<IEnumerable<Doctor>> GetAllDoctorsAsync()
         {
             return await _context.Doctors
-                .OrderByDescending(d => d.CreatedAt)
+                .OrderBy(d => d.FullName)
                 .ToListAsync();
         }
 
@@ -36,6 +36,16 @@ namespace GoDent.BLL.Services
                 .FirstOrDefaultAsync(d => d.Id == id);
         }
 
+        public async Task<Doctor?> GetDoctorWithDetailsAsync(int id)
+        {
+            return await _context.Doctors
+                .Include(d => d.Treatments)
+                    .ThenInclude(t => t.Patient)
+                .Include(d => d.Treatments)
+                    .ThenInclude(t => t.Visit)
+                .FirstOrDefaultAsync(d => d.Id == id);
+        }
+
         public async Task CreateDoctorAsync(Doctor doctor)
         {
             _context.Doctors.Add(doctor);
@@ -44,64 +54,36 @@ namespace GoDent.BLL.Services
 
         public async Task UpdateDoctorAsync(Doctor doctor)
         {
-            var existing = await _context.Doctors.FindAsync(doctor.Id);
-            if (existing == null) return;
+            var existingDoctor = await _context.Doctors.FindAsync(doctor.Id);
+            if (existingDoctor == null) return;
 
-            existing.FullName = doctor.FullName;
-            existing.PhoneNumber = doctor.PhoneNumber;
-            existing.Specialty = doctor.Specialty;
-            existing.Notes = doctor.Notes;
-            existing.IsActive = doctor.IsActive;
+            existingDoctor.FullName = doctor.FullName;
+            existingDoctor.PhoneNumber = doctor.PhoneNumber;
+            existingDoctor.Specialization = doctor.Specialization;
+            existingDoctor.IsActive = doctor.IsActive;
 
-            _context.Doctors.Update(existing);
+            _context.Doctors.Update(existingDoctor);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> DeleteDoctorAsync(int id)
+        public async Task DeleteDoctorAsync(int id)
         {
-            var doctor = await _context.Doctors
-                .Include(d => d.Treatments)
-                .FirstOrDefaultAsync(d => d.Id == id);
-
-            if (doctor == null) return false;
-
-            // Don't delete if doctor has treatments
-            if (doctor.Treatments.Any())
-                return false;
-
-            _context.Doctors.Remove(doctor);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<DoctorEarningsDto> GetDoctorEarningsAsync(int doctorId, DateTime from, DateTime to)
-        {
-            var doctor = await _context.Doctors.FindAsync(doctorId);
-            if (doctor == null)
-                return new DoctorEarningsDto();
-
-            // Client-side evaluation for SQLite decimal Sum compatibility
-            var treatments = await _context.Treatments
-                .Where(t => t.DoctorId == doctorId
-                         && t.TreatmentDate >= from
-                         && t.TreatmentDate <= to)
-                .ToListAsync();
-
-            var totalCost = treatments.Sum(t => t.Cost);
-            var totalLabCost = treatments.Where(t => t.HasLabCost).Sum(t => t.LabCost);
-            var netCost = totalCost - totalLabCost;
-
-            return new DoctorEarningsDto
+            var doctor = await _context.Doctors.FindAsync(id);
+            if (doctor != null)
             {
-                DoctorId = doctorId,
-                DoctorName = doctor.FullName,
-                TotalCost = totalCost,
-                TotalLabCost = totalLabCost,
-                NetCost = netCost,
-                DoctorShare = netCost * 0.40m,
-                ClinicShare = netCost * 0.60m,
-                TreatmentCount = treatments.Count
-            };
+                _context.Doctors.Remove(doctor);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task ToggleActiveAsync(int id)
+        {
+            var doctor = await _context.Doctors.FindAsync(id);
+            if (doctor != null)
+            {
+                doctor.IsActive = !doctor.IsActive;
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

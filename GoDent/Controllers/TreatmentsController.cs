@@ -1,6 +1,7 @@
 using GoDent.BLL.Service.Abstraction;
 using GoDent.DAL.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GoDent.Controllers
 {
@@ -23,6 +24,12 @@ namespace GoDent.Controllers
             _doctorService = doctorService;
         }
 
+        private async Task PopulateDoctorsDropdown(int? selectedDoctorId = null)
+        {
+            var doctors = await _doctorService.GetActiveDoctorsAsync();
+            ViewBag.Doctors = new SelectList(doctors, "Id", "FullName", selectedDoctorId);
+        }
+
         // GET: Treatments/Create?visitId=5
         public async Task<IActionResult> Create(int visitId)
         {
@@ -34,7 +41,7 @@ namespace GoDent.Controllers
             ViewBag.PatientId = visit.PatientId;
             ViewBag.PatientName = visit.Patient?.FullName;
             ViewBag.VisitDate = visit.VisitDate;
-            ViewBag.Doctors = await _doctorService.GetActiveDoctorsAsync();
+            await PopulateDoctorsDropdown();
 
             var treatment = new Treatment
             {
@@ -56,14 +63,16 @@ namespace GoDent.Controllers
             ModelState.Remove("Visit");
             ModelState.Remove("Doctor");
 
-            // Clear lab cost if not flagged
-            if (!treatment.HasLabCost)
-                treatment.LabCost = 0;
-
             // Validate ToothNumber range
             if (treatment.ToothNumber.HasValue && (treatment.ToothNumber < 1 || treatment.ToothNumber > 32))
             {
                 ModelState.AddModelError("ToothNumber", "رقم السن يجب أن يكون بين 1 و 32");
+            }
+
+            // Clear lab cost if no lab cost flag
+            if (!treatment.HasLabCost)
+            {
+                treatment.LabCost = null;
             }
 
             if (ModelState.IsValid)
@@ -78,7 +87,7 @@ namespace GoDent.Controllers
             ViewBag.PatientId = treatment.PatientId;
             ViewBag.PatientName = visit?.Patient?.FullName;
             ViewBag.VisitDate = visit?.VisitDate;
-            ViewBag.Doctors = await _doctorService.GetActiveDoctorsAsync();
+            await PopulateDoctorsDropdown(treatment.DoctorId);
 
             return View(treatment);
         }
@@ -94,7 +103,7 @@ namespace GoDent.Controllers
             ViewBag.PatientId = treatment.PatientId;
             ViewBag.PatientName = treatment.Patient?.FullName;
             ViewBag.VisitDate = treatment.Visit?.VisitDate;
-            ViewBag.Doctors = await _doctorService.GetActiveDoctorsAsync();
+            await PopulateDoctorsDropdown(treatment.DoctorId);
 
             return View(treatment);
         }
@@ -112,14 +121,16 @@ namespace GoDent.Controllers
             ModelState.Remove("Visit");
             ModelState.Remove("Doctor");
 
-            // Clear lab cost if not flagged
-            if (!treatment.HasLabCost)
-                treatment.LabCost = 0;
-
             // Validate ToothNumber range
             if (treatment.ToothNumber.HasValue && (treatment.ToothNumber < 1 || treatment.ToothNumber > 32))
             {
                 ModelState.AddModelError("ToothNumber", "رقم السن يجب أن يكون بين 1 و 32");
+            }
+
+            // Clear lab cost if no lab cost flag
+            if (!treatment.HasLabCost)
+            {
+                treatment.LabCost = null;
             }
 
             if (ModelState.IsValid)
@@ -134,7 +145,7 @@ namespace GoDent.Controllers
             ViewBag.PatientId = treatment.PatientId;
             ViewBag.PatientName = treatment.Patient?.FullName;
             ViewBag.VisitDate = visit?.VisitDate;
-            ViewBag.Doctors = await _doctorService.GetActiveDoctorsAsync();
+            await PopulateDoctorsDropdown(treatment.DoctorId);
 
             return View(treatment);
         }

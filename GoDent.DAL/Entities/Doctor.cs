@@ -2,6 +2,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GoDent.DAL.Entities
 {
+    /// <summary>
+    /// Represents a doctor working at the clinic.
+    /// Revenue split: 40% to doctor, 60% to clinic (after lab costs).
+    /// </summary>
     public class Doctor
     {
         public int Id { get; set; }
@@ -11,22 +15,21 @@ namespace GoDent.DAL.Entities
         [Display(Name = "اسم الطبيب")]
         public string FullName { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "رقم الهاتف مطلوب")]
         [Phone(ErrorMessage = "رقم الهاتف غير صحيح")]
         [MaxLength(20, ErrorMessage = "رقم الهاتف لا يمكن أن يتجاوز 20 رقم")]
         [Display(Name = "رقم الهاتف")]
-        public string? PhoneNumber { get; set; }
+        [RegularExpression(@"^01[0125][0-9]{8}$", ErrorMessage = "رقم الهاتف غير صحيح")]
+        public string PhoneNumber { get; set; } = string.Empty;
 
         [MaxLength(200, ErrorMessage = "التخصص لا يمكن أن يتجاوز 200 حرف")]
         [Display(Name = "التخصص")]
-        public string? Specialty { get; set; }
-
-        [Display(Name = "ملاحظات")]
-        public string? Notes { get; set; }
+        public string? Specialization { get; set; }
 
         [Display(Name = "نشط")]
         public bool IsActive { get; set; } = true;
 
-        [Display(Name = "تاريخ الإضافة")]
+        [Display(Name = "تاريخ الإنشاء")]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // ── Navigation ──

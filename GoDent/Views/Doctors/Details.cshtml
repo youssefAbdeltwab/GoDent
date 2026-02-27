@@ -1,10 +1,13 @@
 @model GoDent.DAL.Entities.Doctor
 
 @{
-    ViewData["Title"] = "تفاصيل الطبيب - " + Model.FullName;
-    var earnings = ViewBag.Earnings as GoDent.BLL.Service.Abstraction.DoctorEarningsDto;
-    var fromDate = (DateTime)ViewBag.FromDate;
-    var toDate = (DateTime)ViewBag.ToDate;
+    ViewData["Title"] = "تفاصيل الطبيب";
+    var treatments = Model.Treatments.OrderByDescending(t => t.TreatmentDate).ToList();
+    decimal totalCost = ViewBag.TotalCost;
+    decimal totalLabCost = ViewBag.TotalLabCost;
+    decimal totalNet = ViewBag.TotalNet;
+    decimal totalDoctorShare = ViewBag.TotalDoctorShare;
+    decimal totalClinicShare = ViewBag.TotalClinicShare;
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -13,6 +16,14 @@
         <i class="fas fa-arrow-right"></i> رجوع للقائمة
     </a>
 </div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
 
 <!-- Doctor Info Card -->
 <div class="card mb-4">
@@ -27,14 +38,16 @@
                     <dd class="col-sm-8">@Model.FullName</dd>
 
                     <dt class="col-sm-4">رقم الهاتف:</dt>
-                    <dd class="col-sm-8">@(Model.PhoneNumber ?? "---")</dd>
-
-                    <dt class="col-sm-4">التخصص:</dt>
-                    <dd class="col-sm-8">@(Model.Specialty ?? "---")</dd>
+                    <dd class="col-sm-8">
+                        <a href="tel:@Model.PhoneNumber" class="text-decoration-none">@Model.PhoneNumber</a>
+                    </dd>
                 </dl>
             </div>
             <div class="col-md-6">
                 <dl class="row">
+                    <dt class="col-sm-4">التخصص:</dt>
+                    <dd class="col-sm-8">@(Model.Specialization ?? "---")</dd>
+
                     <dt class="col-sm-4">الحالة:</dt>
                     <dd class="col-sm-8">
                         @if (Model.IsActive)
@@ -46,95 +59,157 @@
                             <span class="badge bg-secondary">غير نشط</span>
                         }
                     </dd>
-
-                    <dt class="col-sm-4">ملاحظات:</dt>
-                    <dd class="col-sm-8">@(Model.Notes ?? "---")</dd>
-
-                    <dt class="col-sm-4">تاريخ الإضافة:</dt>
-                    <dd class="col-sm-8">@Model.CreatedAt.ToString("yyyy-MM-dd")</dd>
                 </dl>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Earnings Filter -->
-<div class="card mb-4">
-    <div class="card-header bg-info text-white">
-        <h5 class="mb-0"><i class="fas fa-calculator"></i> حساب النسبة</h5>
+<!-- Financial Summary Card (Doctor Salary) -->
+<div class="card mb-4 border-warning">
+    <div class="card-header bg-warning text-dark">
+        <h5 class="mb-0"><i class="fas fa-coins"></i> ملخص المستحقات (الراتب)</h5>
     </div>
     <div class="card-body">
-        <form method="get" class="row g-3 align-items-end mb-4">
-            <input type="hidden" name="id" value="@Model.Id" />
-            <div class="col-md-4">
-                <label class="form-label">من تاريخ</label>
-                <input type="date" name="from" class="form-control" value="@fromDate.ToString("yyyy-MM-dd")" />
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">إلى تاريخ</label>
-                <input type="date" name="to" class="form-control" value="@toDate.ToString("yyyy-MM-dd")" />
-            </div>
-            <div class="col-md-4">
-                <button type="submit" class="btn btn-info">
-                    <i class="fas fa-filter"></i> عرض
-                </button>
-            </div>
-        </form>
-
-        @if (earnings != null)
-        {
-            <div class="row text-center mb-3">
-                <div class="col-md-3">
-                    <div class="border rounded p-3">
-                        <h6 class="text-muted">عدد العلاجات</h6>
-                        <h4 class="text-primary">@earnings.TreatmentCount</h4>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="border rounded p-3">
-                        <h6 class="text-muted">إجمالي التكاليف</h6>
-                        <h4 class="text-dark">@earnings.TotalCost.ToString("N2") ج.م</h4>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="border rounded p-3">
-                        <h6 class="text-muted">تكلفة المعمل</h6>
-                        <h4 class="text-warning">@earnings.TotalLabCost.ToString("N2") ج.م</h4>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="border rounded p-3">
-                        <h6 class="text-muted">صافي التكلفة</h6>
-                        <h4 class="text-info">@earnings.NetCost.ToString("N2") ج.م</h4>
-                    </div>
+        <div class="row text-center">
+            <div class="col-md-3">
+                <div class="border rounded p-3">
+                    <h6 class="text-muted">إجمالي التكلفة</h6>
+                    <h4 class="text-primary">@totalCost.ToString("N2") ج.م</h4>
                 </div>
             </div>
-
-            <div class="row text-center">
-                <div class="col-md-6">
-                    <div class="card border-success">
-                        <div class="card-body">
-                            <h5 class="text-muted">نصيب الطبيب (40%)</h5>
-                            <h2 class="text-success">@earnings.DoctorShare.ToString("N2") ج.م</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card border-primary">
-                        <div class="card-body">
-                            <h5 class="text-muted">نصيب العيادة (60%)</h5>
-                            <h2 class="text-primary">@earnings.ClinicShare.ToString("N2") ج.م</h2>
-                        </div>
-                    </div>
+            <div class="col-md-2">
+                <div class="border rounded p-3">
+                    <h6 class="text-muted">تكلفة المعامل</h6>
+                    <h4 class="text-danger">@totalLabCost.ToString("N2") ج.م</h4>
                 </div>
             </div>
-
-            <div class="alert alert-light mt-3 text-center">
-                <small>
-                    <i class="fas fa-info-circle"></i>
-                    المعادلة: (إجمالي التكاليف - تكلفة المعمل) × 40% = نصيب الطبيب
-                </small>
+            <div class="col-md-2">
+                <div class="border rounded p-3">
+                    <h6 class="text-muted">الصافي</h6>
+                    <h4 class="text-info">@totalNet.ToString("N2") ج.م</h4>
+                </div>
             </div>
-        }
+            <div class="col-md-3">
+                <div class="border rounded p-3 bg-warning bg-opacity-10">
+                    <h6 class="text-muted">مستحقات الطبيب (40%)</h6>
+                    <h4 class="text-warning fw-bold">@totalDoctorShare.ToString("N2") ج.م</h4>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="border rounded p-3">
+                    <h6 class="text-muted">نصيب العيادة (60%)</h6>
+                    <h4 class="text-success">@totalClinicShare.ToString("N2") ج.م</h4>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12 text-center">
+                <span class="text-muted">عدد العلاجات: <strong>@treatments.Count</strong></span>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- Treatments Section -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4><i class="fas fa-tooth"></i> العلاجات (@treatments.Count)</h4>
+</div>
+
+@if (!treatments.Any())
+{
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> لا توجد علاجات مسجلة لهذا الطبيب.
+    </div>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="treatmentsTable" class="table table-striped table-hover table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th style="width: 50px;">#</th>
+                            <th>المريض</th>
+                            <th style="width: 80px;">رقم السن</th>
+                            <th>وصف العلاج</th>
+                            <th style="width: 100px;">التكلفة</th>
+                            <th style="width: 100px;">المعمل</th>
+                            <th style="width: 100px;">الصافي</th>
+                            <th style="width: 100px;">الطبيب 40%</th>
+                            <th style="width: 100px;">العيادة 60%</th>
+                            <th style="width: 110px;">التاريخ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int counter = 1; }
+                        @foreach (var treatment in treatments)
+                        {
+                            <tr>
+                                <td class="text-center">@(counter++)</td>
+                                <td>
+                                    <a asp-controller="Patients" asp-action="Details" asp-route-id="@treatment.PatientId"
+                                       class="text-decoration-none">
+                                        <i class="fas fa-user"></i> @(treatment.Patient?.FullName ?? "---")
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    @if (treatment.ToothNumber.HasValue)
+                                    {
+                                        <span class="badge bg-info">@treatment.ToothNumber</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">---</span>
+                                    }
+                                </td>
+                                <td>@treatment.Description</td>
+                                <td class="text-center">@treatment.Cost.ToString("N2")</td>
+                                <td class="text-center">
+                                    @if (treatment.HasLabCost && treatment.LabCost.HasValue)
+                                    {
+                                        <span class="text-danger">@treatment.LabCost.Value.ToString("N2")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">---</span>
+                                    }
+                                </td>
+                                <td class="text-center fw-bold">@treatment.NetCost.ToString("N2")</td>
+                                <td class="text-center text-warning">@treatment.DoctorShare.ToString("N2")</td>
+                                <td class="text-center text-success">@treatment.ClinicShare.ToString("N2")</td>
+                                <td class="text-center">@treatment.TreatmentDate.ToString("yyyy-MM-dd")</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr class="table-warning fw-bold">
+                            <td colspan="4" class="text-end">الإجمالي:</td>
+                            <td class="text-center">@totalCost.ToString("N2")</td>
+                            <td class="text-center">@totalLabCost.ToString("N2")</td>
+                            <td class="text-center">@totalNet.ToString("N2")</td>
+                            <td class="text-center">@totalDoctorShare.ToString("N2")</td>
+                            <td class="text-center">@totalClinicShare.ToString("N2")</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#treatmentsTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/ar.json'
+                },
+                order: [[9, 'desc']],
+                pageLength: 25
+            });
+        });
+    </script>
+}

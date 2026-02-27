@@ -19,7 +19,6 @@ namespace GoDent.BLL.Services
         public async Task<IEnumerable<Treatment>> GetTreatmentsByVisitIdAsync(int visitId)
         {
             return await _context.Treatments
-                .Include(t => t.Doctor)
                 .Where(t => t.VisitId == visitId)
                 .OrderByDescending(t => t.TreatmentDate)
                 .ToListAsync();

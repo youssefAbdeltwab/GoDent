@@ -32,8 +32,8 @@ namespace GoDent
 
             // ── Register Backup Service ──
             var backupDir = Path.Combine(builder.Environment.ContentRootPath, "Backups");
-            builder.Services.AddSingleton<IBackupService>(sp => new BackupService(dbPath, backupDir));
-            builder.Services.AddHostedService<GoDent.Services.BackupSchedulerService>();
+            //builder.Services.AddSingleton<IBackupService>(sp => new BackupService(dbPath, backupDir));
+            //builder.Services.AddHostedService<GoDent.Services.BackupSchedulerService>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();

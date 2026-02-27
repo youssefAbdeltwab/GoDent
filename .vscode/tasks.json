@@ -1,0 +1,45 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build Solution",
+			"type": "shell",
+			"command": "dotnet build \"d:\\perso\\Projcets\\GoDent Solution\\GoDent Solution.sln\"",
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Build GoDent",
+			"type": "shell",
+			"command": "dotnet build \"d:\\perso\\Projcets\\GoDent Solution\\GoDent Solution.sln\" 2>&1",
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-godent",
+			"type": "shell",
+			"command": "dotnet build",
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build"
+		},
+		{
+			"label": "dotnet-build",
+			"type": "shell",
+			"command": "dotnet build \"d:\\perso\\Projcets\\GoDent Solution\\GoDent Solution.sln\" 2>&1"
+		},
+		{
+			"label": "build-sln",
+			"type": "shell",
+			"command": "dotnet build 2>&1",
+			"problemMatcher": [
+				"$msCompile"
+			]
+		}
+	]
+}
